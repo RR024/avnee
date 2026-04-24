@@ -90,11 +90,49 @@
         $restored = str_replace('__RANGE__', '-', $spaced);
         return ucfirst($restored);
     };
+    $resolvePriceBandLabel = function () {
+        $hasMin = request()->filled('min_price');
+        $hasMax = request()->filled('max_price');
+
+        if (!$hasMin && !$hasMax) {
+            return null;
+        }
+
+        $min = $hasMin ? (int) request('min_price') : null;
+        $max = $hasMax ? (int) request('max_price') : null;
+
+        if ($min === null && $max === 399) {
+            return 'Under 399';
+        }
+
+        if ($min === 400 && $max === 599) {
+            return 'Under 599';
+        }
+
+        if ($min === 600 && $max === 999) {
+            return 'Under 999';
+        }
+
+        if ($min === 1000 && $max === null) {
+            return 'Under 1999';
+        }
+
+        if ($min === null && $max !== null) {
+            return 'Under ' . $max;
+        }
+
+        if ($min !== null && $max !== null) {
+            return $min . ' - ' . $max;
+        }
+
+        return $min . ' & Above';
+    };
+    $priceBandLabel = $resolvePriceBandLabel();
     $headingText = ($activeCollection && in_array($activeCollection, $collectionHeadingPriority, true))
         ? ($collectionLabels[$activeCollection] ?? 'All Collections')
         : (request('category')
             ? $formatFilterLabel(request('category'))
-            : ($collectionLabels[$activeCollection] ?? 'All Collections'));
+            : ($priceBandLabel ?: ($collectionLabels[$activeCollection] ?? 'All Collections')));
 
     $selectedCategorySlug = (string) request('category', '');
     $selectedCategoryNode = null;
@@ -255,7 +293,7 @@
             @elseif(request('collection'))
                 <span class="{{ $textColor }}">{{ $formatFilterLabel(request('collection')) }}</span>
             @else
-                <span class="{{ $textColor }}">All Collections</span>
+                <span class="{{ $textColor }}">{{ $priceBandLabel ?: 'All Collections' }}</span>
             @endif
             @if($breadcrumbSubcategory)
                 <span class="opacity-40">&gt;&gt;</span>
@@ -430,7 +468,7 @@
                                         <label class="block cursor-pointer">
                                             <input type="radio" name="category" value="" onchange="this.form.submit()" {{ !request('category') ? 'checked' : '' }} class="sr-only" />
                                             <span class="flex items-center justify-between px-3 py-2 rounded-md border {{ !request('category') ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor }} text-sm font-medium">
-                                                <span>All Collections</span>
+                                                <span>{{ $priceBandLabel ?: 'All Collections' }}</span>
                                                 <span class="text-xs opacity-70">{{ App\Models\Product::where('brand_id', session('brand_id', 1))->count() }}</span>
                                             </span>
                                         </label>
@@ -623,7 +661,7 @@
                                 <div class="group relative flex flex-col cursor-pointer" onclick="window.location.href='{{ $detailUrl }}'">
                                     <a href="{{ $detailUrl }}" class="relative block overflow-hidden {{ $cardBg }} aspect-[3/4] border {{ $borderColor }} rounded-lg group-hover:shadow-lg transition-shadow">
                                         <img src="{{ $sample['image'] }}" alt="{{ $sample['title'] }}" class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105" onerror="this.onerror=null;this.src='{{ $listingFallbackImage }}';" />
-                                        
+
                                         {{-- Quick View Badge --}}
                                         <div class="absolute top-2 left-2 {{ $isDark ? 'bg-purple-600' : 'bg-orange-600' }} text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
                                             Quick View

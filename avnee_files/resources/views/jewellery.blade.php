@@ -1157,6 +1157,8 @@
 
 @push('scripts')
 <script>
+  window.__AVNEE_CUSTOM_SWIPERS__ = true;
+
     document.addEventListener('DOMContentLoaded', function() {
         const Swiper = window.Swiper;
         if (typeof Swiper === 'undefined') {
@@ -1167,6 +1169,33 @@
         const bestBuysEl = document.querySelector('.best-buys-swiper');
         if (bestBuysEl && bestBuysEl.swiper) {
             bestBuysEl.swiper.destroy(true, true);
+        }
+
+        const heroEl = document.querySelector('.hero-swiper');
+        if (heroEl) {
+          if (heroEl.swiper) {
+            heroEl.swiper.destroy(true, true);
+          }
+
+          new Swiper('.hero-swiper', {
+            loop: heroEl.querySelectorAll('.swiper-slide').length > 1,
+            speed: 800,
+            autoplay: {
+              delay: 5000,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            },
+            effect: 'fade',
+            fadeEffect: { crossFade: true },
+            navigation: {
+              prevEl: '#hero-prev',
+              nextEl: '#hero-next',
+            },
+            pagination: {
+              el: '#hero-pagination',
+              clickable: true,
+            },
+          });
         }
 
         new Swiper('.best-buys-swiper', {

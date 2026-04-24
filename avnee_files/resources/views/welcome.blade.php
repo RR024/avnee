@@ -439,7 +439,7 @@
             $styleImagePath = public_path($styleCard['image']);
             $styleImageVersion = file_exists($styleImagePath) ? filemtime($styleImagePath) : now()->timestamp;
           @endphp
-          <a href="{{ route('front.sale') }}" class="group block text-center">
+          <a href="{{ route('front.products.index', ['category' => $styleCard['slug']]) }}" class="group block text-center">
             <div class="aspect-[4/5] bg-white overflow-hidden shadow-sm border border-[#2B003A]/10 hover:shadow-lg transition-all duration-300">
               <img src="{{ asset($styleCard['image']) . '?v=' . $styleImageVersion }}" alt="{{ $styleCard['label'] }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
             </div>
@@ -825,7 +825,14 @@
 
 @push('scripts')
 <script>
+    window.__AVNEE_CUSTOM_SWIPERS__ = true;
+
     document.addEventListener('DOMContentLoaded', function() {
+        if (typeof window.Swiper === 'undefined') {
+          console.warn('Swiper bundle did not load; skipping welcome sliders.');
+          return;
+        }
+
         const duplicateSectionIds = ['flash-sale', 'combo-deals', 'shop-by-price', 'shop-by-style', 'best-buys', 'shop-the-look'];
         duplicateSectionIds.forEach((sectionId) => {
           const node = document.getElementById(sectionId);
@@ -859,7 +866,34 @@
           });
         }
 
-        new Swiper('.best-buys-swiper', {
+        const heroEl = document.querySelector('.hero-swiper');
+        if (heroEl) {
+          if (heroEl.swiper) {
+            heroEl.swiper.destroy(true, true);
+          }
+
+          new window.Swiper('.hero-swiper', {
+            loop: heroEl.querySelectorAll('.swiper-slide').length > 1,
+            speed: 800,
+            autoplay: {
+              delay: 5000,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            },
+            effect: 'fade',
+            fadeEffect: { crossFade: true },
+            navigation: {
+              prevEl: '#hero-prev',
+              nextEl: '#hero-next',
+            },
+            pagination: {
+              el: '#hero-pagination',
+              clickable: true,
+            },
+          });
+        }
+
+        new window.Swiper('.best-buys-swiper', {
             slidesPerView: 1.2, spaceBetween: 12,
             navigation: { nextEl: '#best-buys-next', prevEl: '#best-buys-prev' },
             watchOverflow: true,
@@ -869,7 +903,7 @@
             1024: { slidesPerView: 4, slidesPerGroup: 4, spaceBetween: 20 }
           }
         });
-        new Swiper('.flash-swiper', {
+        new window.Swiper('.flash-swiper', {
             slidesPerView: 2, spaceBetween: 10,
             navigation: { nextEl: '#flash-next', prevEl: '#flash-prev' },
             pagination: { el: '.swiper-pagination', clickable: true },
@@ -877,7 +911,7 @@
             breakpoints: { 640: { slidesPerView: 3, spaceBetween: 15 }, 1024: { slidesPerView: 5, spaceBetween: 20 } }
         });
         if (document.querySelector('.just-in-swiper')) {
-          new Swiper('.just-in-swiper', {
+          new window.Swiper('.just-in-swiper', {
             loop: true,
             speed: 650,
             slidesPerView: 1,
@@ -901,7 +935,7 @@
             },
           });
         }
-        new Swiper('.best-buy-static-swiper', {
+        new window.Swiper('.best-buy-static-swiper', {
             slidesPerView: 1.15,
             slidesPerGroup: 1,
             spaceBetween: 14,
@@ -982,7 +1016,7 @@
           renderSlots();
         }
         if (document.querySelector('#shop-look-swiper')) {
-          new Swiper('#shop-look-swiper', {
+          new window.Swiper('#shop-look-swiper', {
             grabCursor: true,
             centeredSlides: true,
             loop: true,
@@ -1007,26 +1041,26 @@
             pagination: { el: '.swiper-pagination', clickable: true },
           });
         }
-        new Swiper('.combo-swiper', {
+        new window.Swiper('.combo-swiper', {
             slidesPerView: 1, spaceBetween: 16,
             navigation: { nextEl: '#combo-next', prevEl: '#combo-prev' },
             watchOverflow: true,
             breakpoints: { 640: { slidesPerView: 2, spaceBetween: 20 }, 1024: { slidesPerView: 3, spaceBetween: 30 } }
         });
-        new Swiper('.style-swiper', {
+        new window.Swiper('.style-swiper', {
             slidesPerView: 2, spaceBetween: 16,
             navigation: { nextEl: '#style-next', prevEl: '#style-prev' },
             watchOverflow: true,
             breakpoints: { 480: { slidesPerView: 3, spaceBetween: 20 }, 768: { slidesPerView: 4, spaceBetween: 24 }, 1024: { slidesPerView: 4, spaceBetween: 30 } }
         });
-        new Swiper('.style-static-swiper', {
+        new window.Swiper('.style-static-swiper', {
           slidesPerView: 1.2, spaceBetween: 12,
           navigation: { nextEl: '#style-static-next', prevEl: '#style-static-prev' },
           watchOverflow: true,
           breakpoints: { 640: { slidesPerView: 2.2, spaceBetween: 16 }, 1024: { slidesPerView: 4, spaceBetween: 20 } }
         });
 
-        new Swiper('.new-in-jewellery-swiper', {
+        new window.Swiper('.new-in-jewellery-swiper', {
           slidesPerView: 1.2, spaceBetween: 12,
           loop: true,
           autoplay: { delay: 2800, disableOnInteraction: false },
@@ -1039,7 +1073,7 @@
           },
         });
         if (document.querySelector('.studio-edits-swiper')) {
-          new Swiper('.studio-edits-swiper', {
+          new window.Swiper('.studio-edits-swiper', {
             slidesPerView: 1,
             spaceBetween: 20,
             loop: true,

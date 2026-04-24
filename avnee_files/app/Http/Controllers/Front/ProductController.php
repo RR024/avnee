@@ -359,7 +359,7 @@ class ProductController extends Controller
     {
         // Set theme to studio for kids sections
         session(['theme' => 'studio', 'brand_id' => 1]);
-        
+
         // Map sections to categories
         $sectionMap = [
             'all-girls' => null, // All girls - no category filter
@@ -367,15 +367,15 @@ class ProductController extends Controller
             'dailywear' => 'girls-dresses',
             'festive-wear' => 'festive-wear',
         ];
-        
+
         $category = $sectionMap[$section] ?? null;
-        
+
         // Build query parameters
         $queryParams = [];
         if ($category) {
             $queryParams['category'] = $category;
         }
-        
+
         return redirect()->route('front.products.index', $queryParams);
     }
 
@@ -386,7 +386,7 @@ class ProductController extends Controller
     {
         // Set theme to studio for sarees sections
         session(['theme' => 'studio', 'brand_id' => 1]);
-        
+
         // Map saree categories to collection names
         $sareeMap = [
             'all-sarees' => 'all-sarees',
@@ -395,15 +395,15 @@ class ProductController extends Controller
             'cotton-sarees' => 'cotton-sarees',
             'georgette-sarees' => 'georgette',
         ];
-        
+
         $collection = $sareeMap[$category] ?? null;
-        
+
         // Build query parameters
         $queryParams = [];
         if ($collection) {
             $queryParams['collection'] = $collection;
         }
-        
+
         return redirect()->route('front.products.index', $queryParams);
     }
 
@@ -414,10 +414,10 @@ class ProductController extends Controller
     {
         // Set theme to studio for fabric filters
         session(['theme' => 'studio', 'brand_id' => 1]);
-        
+
         // Build query parameters
         $queryParams = array_merge($request->query(), ['fabric' => $fabric]);
-        
+
         return redirect()->route('front.products.index', $queryParams);
     }
 
@@ -428,10 +428,10 @@ class ProductController extends Controller
     {
         // Set theme to studio for occasion filters
         session(['theme' => 'studio', 'brand_id' => 1]);
-        
+
         // Build query parameters
         $queryParams = array_merge($request->query(), ['occasion' => $occasion]);
-        
+
         return redirect()->route('front.products.index', $queryParams);
     }
 
@@ -442,10 +442,10 @@ class ProductController extends Controller
     {
         // Set theme to studio for color filters
         session(['theme' => 'studio', 'brand_id' => 1]);
-        
+
         // Build query parameters
         $queryParams = array_merge($request->query(), ['color' => $color]);
-        
+
         return redirect()->route('front.products.index', $queryParams);
     }
 
@@ -467,7 +467,7 @@ class ProductController extends Controller
         if (!$galleryProduct && str_starts_with($product, 'bogo-sample-')) {
             $index = (int) substr(str_replace('bogo-sample-', '', $product), 0) - 1;
             $sampleGallery = $this->buildCrossThemeSampleGallery(20);
-            
+
             if (isset($sampleGallery[$index])) {
                 $galleryProduct = [
                     'slug' => $product,

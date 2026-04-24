@@ -842,7 +842,7 @@
           Jewellery
         </a>
       </div>
-      
+
       <!-- Right: Utility Links -->
       <div class="flex items-center gap-3">
         <a href="{{ route('front.blog.index') }}" class="text-pastel-pink text-[10px] font-semibold tracking-[0.16em] uppercase hover:underline">Blog</a>
@@ -1067,13 +1067,13 @@
                   <a href="{{ route('front.products.fabric', ['fabric' => 'silk']) }}" class="mega-card"><img src="{{ asset('images/sarees/1.webp') }}" alt="Silk"><span>Silk</span></a>
                   <a href="{{ route('front.products.fabric', ['fabric' => 'cotton']) }}" class="mega-card"><img src="{{ asset('images/sarees/3.webp') }}" alt="Cotton"><span>Cotton</span></a>
                   <a href="{{ route('front.products.fabric', ['fabric' => 'georgette']) }}" class="mega-card"><img src="{{ asset('images/sarees/5.webp') }}" alt="Georgette"><span>Georgette</span></a>
-                  <a href="{{ route('front.products.fabric', ['fabric' => 'organza']) }}" class="mega-card"><img src="{{ asset('images/sarees/6.webp') }}" alt="Organza"><span>Organza</span></a>
+                  <a href="{{ route('front.products.fabric', ['fabric' => 'organza']) }}" class="mega-card"><img src="{{ asset('images/sarees-sync/6.webp') }}" alt="Organza"><span>Organza</span></a>
                 </div>
                 <div class="mega-panel" data-mega-panel="occasion">
                   <a href="{{ route('front.products.occasion', ['occasion' => 'wedding']) }}" class="mega-card"><img src="{{ asset('images/sarees/2.webp') }}" alt="Wedding"><span>Wedding</span></a>
                   <a href="{{ route('front.products.occasion', ['occasion' => 'festive']) }}" class="mega-card"><img src="{{ asset('images/sarees/4.webp') }}" alt="Festive"><span>Festive</span></a>
                   <a href="{{ route('front.products.occasion', ['occasion' => 'daily-wear']) }}" class="mega-card"><img src="{{ asset('images/sarees/5.webp') }}" alt="Daily Wear"><span>Daily Wear</span></a>
-                  <a href="{{ route('front.products.occasion', ['occasion' => 'party']) }}" class="mega-card"><img src="{{ asset('images/sarees/6.webp') }}" alt="Party"><span>Party</span></a>
+                  <a href="{{ route('front.products.occasion', ['occasion' => 'party']) }}" class="mega-card"><img src="{{ asset('images/sarees-sync/6.webp') }}" alt="Party"><span>Party</span></a>
                 </div>
                 <div class="mega-panel" data-mega-panel="color">
                   <a href="{{ route('front.products.color', ['color' => 'pastel']) }}" class="mega-card"><img src="{{ asset('images/sarees/1.webp') }}" alt="Pastel"><span>Pastel Edit</span></a>
@@ -1316,7 +1316,7 @@
         </span>
       </div>
 
-      
+
       <!-- Mobile Nav Links -->
       <nav class="space-y-1">
         <p class="text-[10px] font-semibold tracking-widest text-gray-400 uppercase mb-3">Shop</p>
@@ -1394,119 +1394,128 @@
 
   <!-- Swiper JS -->
   <script>
-    const shouldEnableLoop = (selector, fallbackSlidesPerView = 1) => {
-      const root = document.querySelector(selector);
-      if (!root) return false;
+    document.addEventListener('DOMContentLoaded', function () {
+      // Home pages with custom section scripts set this marker and own initialization.
+      if (window.__AVNEE_CUSTOM_SWIPERS__ === true) {
+        return;
+      }
 
-      const slides = root.querySelectorAll('.swiper-slide').length;
-      return slides > fallbackSlidesPerView;
-    };
+      if (typeof window.Swiper === 'undefined') {
+        console.warn('Swiper bundle did not load; skipping studio carousel initialization.');
+        return;
+      }
 
-    const heroSwiper = new Swiper('.hero-swiper', {
-      loop: shouldEnableLoop('.hero-swiper', 1),
-      speed: 800,
-      autoplay: {
-        delay: 5000,
-        disableOnInteraction: false,
-        pauseOnMouseEnter: true,
-      },
-      effect: 'fade',
-      fadeEffect: { crossFade: true },
-      navigation: {
-        prevEl: '#hero-prev',
-        nextEl: '#hero-next',
-      },
-      pagination: {
-        el: '#hero-pagination',
-        clickable: true,
-      },
-    });
-  </script>
+      const initSwiper = (selector, options, fallbackSlidesPerView = 1) => {
+        const root = document.querySelector(selector);
+        if (!root) return null;
 
-  <!-- Best Buys Swiper -->
-  <script>
-    const bestBuysSwiper = new Swiper('.best-buys-swiper', {
-      loop: shouldEnableLoop('.best-buys-swiper', 4),
-      speed: 600,
-      spaceBetween: 16,
-      slidesPerView: 2,
-      navigation: {
-        prevEl: '#best-buys-prev',
-        nextEl: '#best-buys-next',
-      },
-      breakpoints: {
-        640: { slidesPerView: 2, spaceBetween: 16 },
-        768: { slidesPerView: 3, spaceBetween: 20 },
-        1024: { slidesPerView: 4, spaceBetween: 24 },
-        1280: { slidesPerView: 4, spaceBetween: 28 },
-      },
-    });
-  </script>
+        const slides = root.querySelectorAll('.swiper-slide').length;
+        const config = { ...options };
+        if (config.loop) {
+          config.loop = slides > fallbackSlidesPerView;
+        }
 
-  <!-- Bestselling Styles Swiper -->
-  <script>
-    const bestsellSwiper = new Swiper('.bestsell-swiper', {
-      loop: shouldEnableLoop('.bestsell-swiper', 5),
-      speed: 600,
-      spaceBetween: 16,
-      slidesPerView: 2,
-      navigation: {
-        prevEl: '#bestsell-prev',
-        nextEl: '#bestsell-next',
-      },
-      breakpoints: {
-        480: { slidesPerView: 2, spaceBetween: 16 },
-        640: { slidesPerView: 3, spaceBetween: 20 },
-        860: { slidesPerView: 4, spaceBetween: 24 },
-        1024: { slidesPerView: 5, spaceBetween: 24 },
-        1280: { slidesPerView: 5, spaceBetween: 24 },
-      },
-    });
-  </script>
+        if (root.swiper) {
+          root.swiper.destroy(true, true);
+        }
 
-  <!-- Customer Stories Swiper -->
-  <script>
-    const storiesSwiper = new Swiper('.stories-swiper', {
-      loop: shouldEnableLoop('.stories-swiper', 2),
-      speed: 600,
-      spaceBetween: 24,
-      slidesPerView: 1,
-      navigation: {
-        nextEl: '#story-next',
-      },
-      pagination: {
-        el: '.stories-swiper .swiper-pagination',
-        clickable: true,
-      },
-      breakpoints: {
-        850: { slidesPerView: 1.5 },
-        1100: { slidesPerView: 2 },
-      },
-    });
-  </script>
+        return new window.Swiper(selector, config);
+      };
 
-  <!-- Shop The Look Swiper -->
-  <script>
-    const lookSwiper = new Swiper('.look-swiper', {
-      loop: shouldEnableLoop('.look-swiper', 5),
-      speed: 800,
-      centeredSlides: false,
-      grabCursor: true,
-      slidesPerView: 1,
-      spaceBetween: 12,
-      loopAdditionalSlides: 5,
-      watchSlidesProgress: true,
-      navigation: {
-        prevEl: '#look-prev',
-        nextEl: '#look-next',
-      },
-      breakpoints: {
-        320: { slidesPerView: 1, centeredSlides: false, spaceBetween: 12 },
-        480: { slidesPerView: 1, centeredSlides: false, spaceBetween: 14 },
-        768: { slidesPerView: 5, centeredSlides: true, spaceBetween: -35 },
-        1024: { slidesPerView: 5, centeredSlides: true, spaceBetween: -55 },
-        1280: { slidesPerView: 5, centeredSlides: true, spaceBetween: -85 },
-      },
+      initSwiper('.hero-swiper', {
+        loop: true,
+        speed: 800,
+        autoplay: {
+          delay: 5000,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true,
+        },
+        effect: 'fade',
+        fadeEffect: { crossFade: true },
+        navigation: {
+          prevEl: '#hero-prev',
+          nextEl: '#hero-next',
+        },
+        pagination: {
+          el: '#hero-pagination',
+          clickable: true,
+        },
+      }, 1);
+
+      initSwiper('.best-buys-swiper', {
+        loop: true,
+        speed: 600,
+        spaceBetween: 16,
+        slidesPerView: 2,
+        navigation: {
+          prevEl: '#best-buys-prev',
+          nextEl: '#best-buys-next',
+        },
+        breakpoints: {
+          640: { slidesPerView: 2, spaceBetween: 16 },
+          768: { slidesPerView: 3, spaceBetween: 20 },
+          1024: { slidesPerView: 4, spaceBetween: 24 },
+          1280: { slidesPerView: 4, spaceBetween: 28 },
+        },
+      }, 4);
+
+      initSwiper('.bestsell-swiper', {
+        loop: true,
+        speed: 600,
+        spaceBetween: 16,
+        slidesPerView: 2,
+        navigation: {
+          prevEl: '#bestsell-prev',
+          nextEl: '#bestsell-next',
+        },
+        breakpoints: {
+          480: { slidesPerView: 2, spaceBetween: 16 },
+          640: { slidesPerView: 3, spaceBetween: 20 },
+          860: { slidesPerView: 4, spaceBetween: 24 },
+          1024: { slidesPerView: 5, spaceBetween: 24 },
+          1280: { slidesPerView: 5, spaceBetween: 24 },
+        },
+      }, 5);
+
+      initSwiper('.stories-swiper', {
+        loop: true,
+        speed: 600,
+        spaceBetween: 24,
+        slidesPerView: 1,
+        navigation: {
+          nextEl: '#story-next',
+        },
+        pagination: {
+          el: '.stories-swiper .swiper-pagination',
+          clickable: true,
+        },
+        breakpoints: {
+          850: { slidesPerView: 1.5 },
+          1100: { slidesPerView: 2 },
+        },
+      }, 2);
+
+      initSwiper('.look-swiper', {
+        loop: true,
+        speed: 800,
+        centeredSlides: false,
+        grabCursor: true,
+        slidesPerView: 1,
+        spaceBetween: 12,
+        loopAdditionalSlides: 5,
+        watchSlidesProgress: true,
+        navigation: {
+          prevEl: '#look-prev',
+          nextEl: '#look-next',
+        },
+        breakpoints: {
+          320: { slidesPerView: 1, centeredSlides: false, spaceBetween: 12 },
+          480: { slidesPerView: 1, centeredSlides: false, spaceBetween: 14 },
+          768: { slidesPerView: 5, centeredSlides: true, spaceBetween: -35 },
+          1024: { slidesPerView: 5, centeredSlides: true, spaceBetween: -55 },
+          1280: { slidesPerView: 5, centeredSlides: true, spaceBetween: -85 },
+        },
+      }, 5);
     });
   </script>
 

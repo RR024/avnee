@@ -698,7 +698,7 @@
   <!-- ═══════════════════════════════════════════════ -->
   <header id="main-header" class="bg-[#300E54] backdrop-blur-md border-b border-[#A47DAB]/25 transition-all duration-300">
     <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center h-16 sm:h-24 gap-2 sm:gap-4">
+      <div class="grid grid-cols-[auto_1fr_auto] lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center h-16 sm:h-24 gap-2 sm:gap-4">
 
         <!-- Left: Mobile Menu -->
         <div class="flex items-center gap-3 sm:gap-4 min-w-0">
@@ -710,7 +710,7 @@
           </button>
 
           <!-- Search Bar (Desktop, left aligned) -->
-          <div class="hidden lg:flex w-[360px] xl:w-[460px] max-w-full">
+          <div class="hidden lg:flex lg:-ml-10 xl:-ml-14 w-[360px] xl:w-[460px] max-w-full">
             <div class="relative w-full" id="search-container">
               <input id="search-input" type="text" placeholder="Search for Earrings, Necklace, Rings, Anklets..."
                 class="search-input w-full h-10 pl-4 pr-11 text-sm bg-white/10 border border-[#F8C8DC]/30 placeholder:text-[#F8C8DC]/70 text-[#F8C8DC] transition-all duration-200 focus:ring-1 focus:ring-[#F8C8DC]/50 shadow-inner" autocomplete="off" />
@@ -1244,6 +1244,10 @@
   <!-- Swiper JS -->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
+      if (window.__AVNEE_CUSTOM_SWIPERS__ === true) {
+        return;
+      }
+
       if (typeof window.Swiper === 'undefined') {
         console.warn('Swiper bundle did not load; skipping carousel initialization.');
         return;
