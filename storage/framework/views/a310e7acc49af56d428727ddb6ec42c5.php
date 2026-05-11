@@ -1,0 +1,1132 @@
+<?php $__env->startSection('content'); ?>
+<?php
+    $isDark = $theme === 'jewellery';
+    $textColor = $isDark ? 'text-[#fdf2f8]' : 'text-gray-900';
+    $mutedColor = $isDark ? 'text-[#e9d5ff]' : 'text-gray-500';
+    $borderColor = $isDark ? 'border-[#4f006a]' : 'border-gray-200';
+    $bgColor = $isDark ? 'bg-[#230030]' : 'bg-white';
+    $accentColor = $isDark ? 'text-[#f3d9ff]' : 'text-[#b87333]';
+    $accentBg = $isDark ? 'bg-[#d4af37]' : 'bg-[#b87333]';
+    $cardBg = $isDark ? 'bg-[#350047]' : 'bg-gray-50';
+    $inputClass = $isDark ? 'bg-[#2B003A] border-[#4f006a] text-white focus:ring-[#d4af37] focus:border-[#d4af37]' : 'bg-white border-gray-300 text-gray-900 focus:ring-[#b87333] focus:border-[#b87333]';
+    $collectionLabels = [
+        'sale' => 'Sale Collection',
+        'new-arrivals' => 'New Arrivals',
+        'best-sellers' => 'Best Sellers',
+        'bogo' => 'BOGO Collection',
+        'organizers' => 'Organizers',
+        'gifting' => 'Gifting',
+        'all-collections' => 'All Collections',
+        'party-frocks' => 'Party Frocks',
+        'summer-collections' => 'Summer Collections',
+        'summer-classics' => 'Summer Classics',
+        'birthday-glam' => 'Birthday Glam',
+        'ugadi-sale' => 'Ugadi Sale',
+        'festive-wear' => 'Festive Wear',
+        'daily-wear' => 'Daily Wear',
+        'all-sarees' => 'All Sarees',
+        'printed-cotton' => 'Printed Cotton',
+        'georgette' => 'Georgette',
+        'semi-silk' => 'Semi Silk',
+    ];
+    $collectionExperiences = [
+        'sale' => [
+            'eyebrow' => 'Limited-Time Edit',
+            'title' => 'Seasonal Sale Atelier',
+            'description' => 'Timed markdowns on festive, party, and signature looks. Curated to help you build complete looks without compromise.',
+            'chips' => ['Top Discount Picks', 'Under 1999', 'Occasion Ready'],
+            'cta' => route('front.products.index', ['collection' => 'sale', 'discount' => 1]),
+            'cta_text' => 'Shop Markdowns',
+        ],
+        'new-arrivals' => [
+            'eyebrow' => 'Fresh In',
+            'title' => 'New Arrival Journal',
+            'description' => 'Discover the latest silhouettes, tones, and textures as soon as they land. Updated continuously for both studio and celebration dressing.',
+            'chips' => ['This Week', 'Trending Now', 'Limited Quantities'],
+            'cta' => route('front.products.index', ['collection' => 'new-arrivals', 'sort' => 'newest']),
+            'cta_text' => 'Explore Fresh Drops',
+        ],
+        'best-sellers' => [
+            'eyebrow' => 'Most Loved',
+            'title' => 'Best-Seller Registry',
+            'description' => 'The most re-ordered and re-loved AVNEE pieces. Tested by real wardrobes and selected for repeat-wear value.',
+            'chips' => ['Top Rated', 'Repeat Buys', 'Iconic Fits'],
+            'cta' => route('front.products.index', ['collection' => 'best-sellers', 'sort' => 'price_desc']),
+            'cta_text' => 'Browse Top Picks',
+        ],
+        'bogo' => [
+            'eyebrow' => 'Pair Better',
+            'title' => 'BOGO & Bundle Deck',
+            'description' => 'Build match-ready bundles and maximize value on combo-friendly pieces designed for family wardrobes and gifting.',
+            'chips' => ['Combo Eligible', 'Mix & Match', 'Value Bundles'],
+            'cta' => route('front.products.index', ['collection' => 'bogo', 'bogo' => 1]),
+            'cta_text' => 'Unlock Bundle Value',
+        ],
+        'organizers' => [
+            'eyebrow' => 'Declutter Edit',
+            'title' => 'Organizers Collection',
+            'description' => 'Functional organisers designed to keep your jewellery, accessories, and daily picks sorted beautifully.',
+            'chips' => ['Smart Storage', 'Daily Utility', 'Neat Display'],
+            'cta' => route('front.products.collection', ['collection' => 'organizers']),
+            'cta_text' => 'Shop Organizers',
+        ],
+        'gifting' => [
+            'eyebrow' => 'Gift-Ready Picks',
+            'title' => 'Gifting Collection',
+            'description' => 'Curated gifting favourites for celebrations, return gifts, and thoughtful everyday surprises.',
+            'chips' => ['Gift Boxes', 'Occasion Picks', 'Ready to Gift'],
+            'cta' => route('front.products.collection', ['collection' => 'gifting']),
+            'cta_text' => 'Shop Gifting',
+        ],
+    ];
+    $activeCollection = request('collection');
+    $collectionHeadingPriority = ['all-collections', 'party-frocks', 'summer-collections', 'summer-classics', 'birthday-glam', 'ugadi-sale', 'festive-wear', 'daily-wear', 'all-sarees', 'printed-cotton', 'georgette', 'semi-silk'];
+    $formatFilterLabel = function (?string $raw): string {
+        $raw = (string) $raw;
+        if ($raw === '') {
+            return '';
+        }
+        $protected = preg_replace('/(?<=\d)-(?=\d)/', '__RANGE__', $raw) ?? $raw;
+        $spaced = str_replace('-', ' ', $protected);
+        $restored = str_replace('__RANGE__', '-', $spaced);
+        return ucfirst($restored);
+    };
+    $resolvePriceBandLabel = function () {
+        $hasMin = request()->filled('min_price');
+        $hasMax = request()->filled('max_price');
+
+        if (!$hasMin && !$hasMax) {
+            return null;
+        }
+
+        $min = $hasMin ? (int) request('min_price') : null;
+        $max = $hasMax ? (int) request('max_price') : null;
+
+        if ($min === null && $max === 399) {
+            return 'Under 399';
+        }
+
+        if ($min === 400 && $max === 599) {
+            return 'Under 599';
+        }
+
+        if ($min === 600 && $max === 999) {
+            return 'Under 999';
+        }
+
+        if ($min === 1000 && $max === null) {
+            return 'Under 1999';
+        }
+
+        if ($min === null && $max !== null) {
+            return 'Under ' . $max;
+        }
+
+        if ($min !== null && $max !== null) {
+            return $min . ' - ' . $max;
+        }
+
+        return $min . ' & Above';
+    };
+    $priceBandLabel = $resolvePriceBandLabel();
+    $headingText = ($activeCollection && in_array($activeCollection, $collectionHeadingPriority, true))
+        ? ($collectionLabels[$activeCollection] ?? 'All Collections')
+        : (request('category')
+            ? ((string) request('category') === 'jewellery-gallery' ? 'Sales' : $formatFilterLabel(request('category')))
+            : ($priceBandLabel ?: ($collectionLabels[$activeCollection] ?? 'All Collections')));
+
+    $selectedCategorySlug = (string) request('category', '');
+    $selectedCategoryNode = null;
+    $selectedParentNode = null;
+    if ($selectedCategorySlug !== '') {
+        foreach ($categories as $catNode) {
+            if ((string) $catNode->slug === $selectedCategorySlug) {
+                $selectedCategoryNode = $catNode;
+                break;
+            }
+            foreach (($catNode->children ?? collect()) as $childNode) {
+                if ((string) $childNode->slug === $selectedCategorySlug) {
+                    $selectedCategoryNode = $childNode;
+                    $selectedParentNode = $catNode;
+                    break 2;
+                }
+            }
+        }
+    }
+    $breadcrumbCategory = $selectedParentNode ?? ($selectedCategoryNode && !($selectedCategoryNode->parent_id ?? null) ? $selectedCategoryNode : null);
+    $breadcrumbSubcategory = $selectedParentNode ? $selectedCategoryNode : null;
+    $onlineImage = function (string $keyword, int $seed = 1): string {
+        $sanitized = strtolower(trim((string) preg_replace('/[^a-z0-9]+/i', ',', $keyword), ','));
+        if ($sanitized === '') {
+            $sanitized = 'fashion,jewellery';
+        }
+
+        return 'https://loremflickr.com/900/1200/' . $sanitized . '?lock=' . $seed;
+    };
+    $listingFallbackImage = $isDark
+        ? asset('images/hero-slider/3.png')
+        : asset('images/hero-slider/summer-classics.png');
+
+    $sareeSyncFallbacks = array_map(fn($i) => asset('images/sarees-sync/' . $i . '.webp'), range(1, 10));
+
+    $categoryFallbacks = [
+        'party-frocks' => array_map(fn($i) => $onlineImage('girls party frock fashion', 100 + $i), range(1, 16)),
+        'festive-wear' => array_map(fn($i) => $onlineImage('kids festive ethnic dress', 200 + $i), range(1, 16)),
+        'girls-dresses' => array_map(fn($i) => $onlineImage('girls dress fashion', 300 + $i), range(1, 16)),
+        'infant-sets' => array_map(fn($i) => $onlineImage('baby ethnic outfit', 400 + $i), range(1, 16)),
+        '2-4-years' => array_map(fn($i) => $onlineImage('toddler girls outfit', 500 + $i), range(1, 16)),
+        '4-6-years' => array_map(fn($i) => $onlineImage('kids outfit fashion', 600 + $i), range(1, 16)),
+        '6-14-years' => array_map(fn($i) => $onlineImage('teens ethnic wear', 700 + $i), range(1, 16)),
+        'sarees' => $sareeSyncFallbacks,
+        'jewellery' => array_map(fn($i) => $onlineImage('indian jewellery set', 900 + $i), range(1, 16)),
+        'jewellery-gallery' => array_map(fn($i) => $onlineImage('bridal jewellery collection', 1000 + $i), range(1, 16)),
+        'earrings' => array_map(fn($i) => $onlineImage('earrings jewellery', 1100 + $i), range(1, 16)),
+        'necklace' => array_map(fn($i) => $onlineImage('necklace jewellery', 1200 + $i), range(1, 16)),
+        'rings' => array_map(fn($i) => $onlineImage('ring jewellery', 1300 + $i), range(1, 16)),
+        'bangles-bracelet' => array_map(fn($i) => $onlineImage('bangles bracelet jewellery', 1400 + $i), range(1, 16)),
+        'necklace-set' => array_map(fn($i) => $onlineImage('necklace set jewellery', 1500 + $i), range(1, 16)),
+        'belt' => array_map(fn($i) => $onlineImage('waist belt accessory women', 1600 + $i), range(1, 16)),
+        'maangtikkas' => array_map(fn($i) => $onlineImage('maang tikka jewellery', 1700 + $i), range(1, 16)),
+        'mens-accessories' => array_map(fn($i) => $onlineImage('mens accessory fashion', 1800 + $i), range(1, 16)),
+        'anklet' => array_map(fn($i) => $onlineImage('anklet jewellery', 1900 + $i), range(1, 16)),
+        'mathapati' => array_map(fn($i) => $onlineImage('matha patti jewellery', 2000 + $i), range(1, 16)),
+                'korean' => array_map(fn($i) => $onlineImage('korean jewellery women', 2020 + $i), range(1, 16)),
+        'traditional' => array_map(fn($i) => $onlineImage('traditional indian jewellery', 2030 + $i), range(1, 16)),
+        'kundan' => array_map(fn($i) => $onlineImage('kundan jewellery set', 2040 + $i), range(1, 16)),
+        'oxidised' => array_map(fn($i) => $onlineImage('oxidised silver jewellery', 2045 + $i), range(1, 16)),
+        '18k-gold-plated' => array_map(fn($i) => $onlineImage('18k gold plated jewellery', 2048 + $i), range(1, 16)),
+        'fashion' => array_map(fn($i) => $onlineImage('fashion jewellery for women', 2049 + $i), range(1, 16)),
+        'watches' => array_map(fn($i) => $onlineImage('women watches fashion', 2050 + $i), range(1, 16)),
+        'trinkets' => array_map(fn($i) => $onlineImage('fashion trinkets accessories', 2100 + $i), range(1, 16)),
+        'fun-trinkets' => array_map(fn($i) => $onlineImage('cute trinkets accessories', 2200 + $i), range(1, 16)),
+        'accessories' => array_map(fn($i) => asset('images/hair-accessories/ha-src-' . $i . '.jpeg'), range(1, 16)),
+        'hair-accessories' => array_map(fn($i) => asset('images/hair-accessories/ha-src-' . $i . '.jpeg'), range(1, 16)),
+        'organizers' => array_map(fn($i) => asset('images/hair-accessories/ha-src-' . $i . '.jpeg'), range(1, 16)),
+        'gifting' => array_map(fn($i) => $onlineImage('gift jewellery festive', 2300 + $i), range(1, 16)),
+    ];
+
+    $nameFallbackRules = [
+        'classic peach layered frock' => [asset('images/best-buy/classic-peach-layered-frock.png')],
+        'ethnic charm festive dress' => [asset('images/best-buy/ethnic-charm-festive-dress.png')],
+        'floral garden party dress' => [asset('images/best-buy/floral-garden-party-dress.png')],
+        'casual chic denim set' => [asset('images/best-buy/casual-chic-denim-set.png')],
+        'blush bloom ethnic set' => [asset('images/best-buy/blush-bloom-ethnic-set.png')],
+        'shimmer silver party dress' => [asset('images/best-buy/shimmer-silver-party-dress.png')],
+        'glam black sequin dress' => [asset('images/best-buy/glam-black-sequin-dress.png')],
+        'twinkle pink party dress' => [asset('images/best-buy/twinkle-pink-party-dress.png')],
+        'party frock' => [asset('images/shop-by-style/party-frocks.png')],
+        'festive wear' => [asset('images/shop-by-style/festive-wear.png')],
+        'girls dress' => [asset('images/shop-by-style/girls-dresses.png')],
+        'infant set' => [asset('images/shop-by-style/infant-sets.png')],
+        'baby' => [asset('images/shop-by-style/infant-sets.png')],
+        'child' => [asset('images/shop-by-style/2-4-years.png'), asset('images/shop-by-style/4-6-years.png')],
+        'trinket' => [
+            asset('images/trinkets/WhatsApp Image 2026-04-06 at 3.31.27 AM.jpeg'),
+            asset('images/trinkets/WhatsApp Image 2026-04-06 at 3.31.29 AM.jpeg'),
+        ],
+        'saree' => $sareeSyncFallbacks,
+        'earring' => [asset('images/jewellery/Avnee_s Handmade  Statement Earrings/AVN-JW-HAN-FLA-C45/AVN-JW-HAN-FLA-C45-01.png')],
+        'ring' => [asset('images/jewellery/Avnee_s Adjustable Radiant Bloom Statement Ring/AVN-JW-FRN-RRD-C70/AVN-JW-FRN-RRD-C70-01.png')],
+        'pendant' => [asset('images/jewellery/Avnee_s Bird Design Pendant with Chain/AVN-JW-NEC-RGB-C86/AVN-JW-NEC-RGB-C86-01.png')],
+        'necklace' => [asset('images/jewellery/Necklace/17850103560573191.webp')],
+    ];
+
+    $resolveProductImage = function (?string $rawPath) {
+        $rawPath = trim((string) $rawPath);
+        if ($rawPath === '') {
+            return null;
+        }
+
+        if (preg_match('/^https?:\/\//i', $rawPath)) {
+            return $rawPath;
+        }
+
+        $normalized = ltrim($rawPath, '/');
+
+        if (str_starts_with($normalized, 'images/')) {
+            $abs = public_path($normalized);
+            return is_file($abs) ? asset($normalized) : null;
+        }
+
+        if (str_starts_with($normalized, 'storage/')) {
+            $abs = public_path($normalized);
+            return is_file($abs) ? asset($normalized) : null;
+        }
+
+        $storagePath = 'storage/' . $normalized;
+        $absStorage = public_path($storagePath);
+        if (is_file($absStorage)) {
+            $segments = array_map('rawurlencode', explode('/', $storagePath));
+            return asset(implode('/', $segments));
+        }
+
+        return null;
+    };
+
+    $resolveNameBasedImage = function (?string $productName, int $seed = 0) use ($nameFallbackRules) {
+        $normalizedName = strtolower(trim((string) $productName));
+        if ($normalizedName === '') {
+            return null;
+        }
+
+        foreach ($nameFallbackRules as $needle => $candidates) {
+            if (!str_contains($normalizedName, $needle) || empty($candidates)) {
+                continue;
+            }
+
+            $index = abs($seed) % count($candidates);
+            return $candidates[$index] ?? $candidates[0];
+        }
+
+        return null;
+    };
+?>
+
+<?php
+    $isStandaloneDarkCategory = $isDark && in_array($selectedCategorySlug, ['trinkets'], true);
+?>
+
+<div class="<?php echo e($isDark ? 'bg-[#2B003A]' : 'bg-[#F8C8DC]'); ?>">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <nav class="mb-6 flex items-center gap-2 text-[10px] font-bold tracking-[0.24em] uppercase <?php echo e($mutedColor); ?> overflow-x-auto whitespace-nowrap" aria-label="Breadcrumb">
+            <a href="<?php echo e(route($isDark ? 'front.jewellery' : 'front.home')); ?>" class="hover:<?php echo e($textColor); ?> transition-colors">HOME</a>
+            <span class="opacity-40">&gt;&gt;</span>
+            <?php if($isDark && !$isStandaloneDarkCategory && !(request('collection') === 'sale' || request()->boolean('discount'))): ?>
+                <a href="<?php echo e(route('front.jewellery')); ?>" class="hover:<?php echo e($textColor); ?> transition-colors <?php echo e($textColor); ?>">JEWELLERY</a>
+                <span class="opacity-40">&gt;&gt;</span>
+                <?php if(request('collection') === 'sale' || request()->boolean('discount')): ?>
+                    <span class="<?php echo e($textColor); ?>">SALE</span>
+                <?php elseif($breadcrumbCategory): ?>
+                    <a href="<?php echo e(route('front.products.index', ['category' => $breadcrumbCategory->slug])); ?>" class="hover:<?php echo e($textColor); ?> transition-colors <?php echo e($textColor); ?>"><?php echo e($breadcrumbCategory->name); ?></a>
+                <?php elseif($selectedCategorySlug !== ''): ?>
+                    <span class="<?php echo e($textColor); ?>"><?php echo e($formatFilterLabel($selectedCategorySlug)); ?></span>
+                <?php elseif(request('collection')): ?>
+                    <span class="<?php echo e($textColor); ?>"><?php echo e($formatFilterLabel(request('collection'))); ?></span>
+                <?php else: ?>
+                    <span class="<?php echo e($textColor); ?>"><?php echo e($priceBandLabel ?: 'All Collections'); ?></span>
+                <?php endif; ?>
+            <?php else: ?>
+                <?php if($breadcrumbCategory): ?>
+                    <a href="<?php echo e(route('front.products.index', ['category' => $breadcrumbCategory->slug])); ?>" class="hover:<?php echo e($textColor); ?> transition-colors <?php echo e($textColor); ?>"><?php echo e($breadcrumbCategory->slug === 'jewellery-gallery' ? 'Sales' : $breadcrumbCategory->name); ?></a>
+                <?php elseif($selectedCategorySlug !== ''): ?>
+                    <span class="<?php echo e($textColor); ?>"><?php echo e($selectedCategorySlug === 'jewellery-gallery' ? 'Sales' : $formatFilterLabel($selectedCategorySlug)); ?></span>
+                <?php elseif(request('collection')): ?>
+                    <span class="<?php echo e($textColor); ?>"><?php echo e($formatFilterLabel(request('collection'))); ?></span>
+                <?php else: ?>
+                    <span class="<?php echo e($textColor); ?>"><?php echo e($priceBandLabel ?: 'All Collections'); ?></span>
+                <?php endif; ?>
+            <?php endif; ?>
+            <?php if($breadcrumbSubcategory): ?>
+                <span class="opacity-40">&gt;&gt;</span>
+                <span class="<?php echo e($textColor); ?>"><?php echo e($breadcrumbSubcategory->name); ?></span>
+            <?php endif; ?>
+        </nav>
+
+        <!-- Premium Header Area -->
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-8">
+            <h1 class="font-heading text-3xl sm:text-4xl font-normal tracking-tight <?php echo e($textColor); ?> uppercase">
+                <?php echo e($headingText); ?>
+
+            </h1>
+            <?php $curatedCount = ($products->isEmpty() && !empty($festiveGallery)) ? count($festiveGallery) : $products->total(); ?>
+            <p class="text-xs <?php echo e($mutedColor); ?> font-bold uppercase tracking-widest"><?php echo e($curatedCount); ?> Items</p>
+        </div>
+
+        <section class="hidden mb-8 border <?php echo e($borderColor); ?> <?php echo e($isDark ? 'bg-gradient-to-r from-[#2b003a] via-[#3d0a43] to-[#2b003a]' : 'bg-[#f4ecf0]'); ?> px-6 sm:px-8 py-5 sm:py-6 rounded-lg">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <p class="text-lg sm:text-2xl <?php echo e($isDark ? 'text-[#f3d9ff]' : 'text-[#4b2d3b]'); ?> font-semibold tracking-wide">Wedding Invite Edit</p>
+                <p class="text-sm sm:text-lg <?php echo e($isDark ? 'text-[#e9d5ff]' : 'text-[#6a4a5a]'); ?>">Shop any 2 showstopper guest ensembles @ ₹34,999/-</p>
+            </div>
+        </section>
+
+        <?php if(request('collection') === 'sale' || request()->boolean('discount')): ?>
+            <?php
+                $saleCards = collect($saleVisuals['cards'] ?? [])->values();
+                $saleBanner = $saleVisuals['banner'] ?? null;
+                $saleCode = $saleVisuals['code'] ?? 'AVNEESALE10';
+                $saleNote = $saleVisuals['note'] ?? 'No Return No Exchange';
+            ?>
+
+            <section class="mb-10 border <?php echo e($borderColor); ?> <?php echo e($isDark ? 'bg-[#2f003f]' : 'bg-[#fff5f8]'); ?> overflow-hidden rounded-lg">
+                <div class="px-4 sm:px-6 py-3 border-b <?php echo e($borderColor); ?> flex items-center justify-between gap-3">
+                    <div class="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.22em]">
+                        <span class="px-2.5 py-1 <?php echo e($isDark ? 'bg-[#7a102f] text-white' : 'bg-[#7a102f] text-white'); ?>">Sale</span>
+                        <span class="<?php echo e($mutedColor); ?>"><?php echo e($saleNote); ?></span>
+                    </div>
+                    <button type="button" id="tnc-open-btn" class="shrink-0 px-3 py-1.5 border <?php echo e($borderColor); ?> <?php echo e($isDark ? 'bg-[#1f0028] text-[#f3d9ff] hover:bg-[#2b003a]' : 'bg-[#f8d6e2] text-[#6a304f] hover:bg-[#f3c3d4]'); ?> text-[11px] font-bold tracking-[0.18em] uppercase">
+                        T&amp;C
+                    </button>
+                    <p class="text-[11px] sm:text-xs font-bold uppercase tracking-[0.18em] <?php echo e($isDark ? 'text-[#f3d9ff]' : 'text-[#7f355d]'); ?>">AVNEE Sale - Kids Collection (Girls 0-12)</p>
+                </div>
+
+                <div class="px-4 sm:px-6 py-4 <?php echo e($isDark ? 'bg-[#3a0a4d]' : 'bg-[#f8e4eb]'); ?> border-b <?php echo e($borderColor); ?>">
+                    <p class="text-center text-base sm:text-2xl font-semibold <?php echo e($isDark ? 'text-[#ffe6f2]' : 'text-[#6a304f]'); ?> tracking-wide">
+                        Shop ₹2,999 &amp; Get 10% Off <span class="mx-2 opacity-60">|</span> Use Code:
+                        <span class="inline-block px-3 py-1 text-sm sm:text-xl rounded <?php echo e($isDark ? 'bg-[#f3d9ff] text-[#2b003a]' : 'bg-[#cfa7b8] text-white'); ?> font-black tracking-[0.08em]"><?php echo e($saleCode); ?></span>
+                    </p>
+                </div>
+
+                <?php if(!empty($saleBanner)): ?>
+                    <div class="px-4 sm:px-6 pt-4">
+                        <div class="overflow-hidden border <?php echo e($borderColor); ?> rounded-lg">
+                            <img src="<?php echo e($saleBanner); ?>" alt="AVNEE Sale Highlights" class="w-full h-28 sm:h-44 object-cover" loading="lazy" onerror="this.onerror=null;this.src='<?php echo e($listingFallbackImage); ?>';" />
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <div class="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
+                    <?php $__currentLoopData = range(0, 2); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idx): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php
+                            $card = $saleCards[$idx] ?? null;
+                            $cardRoutes = [
+                                'Last Chance' => route('front.products.index', ['collection' => 'sale', 'discount' => 1]),
+                                'BOGO Offer' => route('front.products.index', ['collection' => 'bogo', 'bogo' => 1]),
+                                'Highlight Offer' => route('front.products.index', ['collection' => 'sale', 'discount' => 1]),
+                            ];
+                            $cardRoute = $cardRoutes[$card['kicker'] ?? ''] ?? route('front.products.index', ['collection' => 'sale', 'discount' => 1]);
+                        ?>
+                        <a href="<?php echo e($cardRoute); ?>" class="block group border <?php echo e($borderColor); ?> <?php echo e($isDark ? 'bg-[#2b003a]' : 'bg-white/85'); ?> overflow-hidden rounded-lg">
+                            <div class="aspect-[4/3] overflow-hidden bg-black/5">
+                                <img src="<?php echo e($card['image'] ?? $listingFallbackImage); ?>" alt="<?php echo e($card['kicker'] ?? 'Sale Offer'); ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" onerror="this.onerror=null;this.src='<?php echo e($listingFallbackImage); ?>';" />
+                            </div>
+                            <div class="px-4 py-3 text-center">
+                                <p class="text-lg sm:text-2xl <?php echo e($isDark ? 'text-[#f7d6e8]' : 'text-[#6a304f]'); ?>"><?php echo e($card['kicker'] ?? 'Sale Offer'); ?></p>
+                                <p class="text-2xl sm:text-4xl font-black uppercase tracking-wide <?php echo e($isDark ? 'text-[#f3d9ff]' : 'text-[#7a3a58]'); ?>"><?php echo e($card['headline'] ?? 'Trending Offer'); ?></p>
+                            </div>
+                        </a>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </div>
+            </section>
+        <?php endif; ?>
+
+        <section class="mb-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 p-4 <?php echo e($isDark ? 'bg-[#350047] border border-[#4f006a]' : 'bg-gray-50 border border-gray-200'); ?> rounded-lg">
+            <div class="flex flex-wrap items-center gap-2">
+                <?php
+                    $quickSizes = collect($sizes ?? [])->take(3);
+                ?>
+                <?php $__currentLoopData = $quickSizes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $quickSize): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <a href="<?php echo e(request()->fullUrlWithQuery(['size' => $quickSize])); ?>" class="inline-flex items-center px-3 py-1.5 rounded-full border <?php echo e(request('size') == $quickSize ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#7f355d] text-[#7f355d] bg-white') : ($isDark ? 'border-[#4f006a] text-[#e9d5ff]' : 'border-gray-400 text-gray-700 bg-white')); ?> text-xs font-semibold">
+                        <?php echo e($quickSize); ?>
+
+                    </a>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            </div>
+
+            <form action="<?php echo e(route('front.products.index')); ?>" method="GET" class="flex items-center gap-3">
+                <?php $__currentLoopData = request()->except('sort', 'page'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k => $v): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php if(is_array($v)): ?>
+                        <?php $__currentLoopData = $v; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $vv): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <input type="hidden" name="<?php echo e($k); ?>[]" value="<?php echo e($vv); ?>" />
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php else: ?>
+                        <input type="hidden" name="<?php echo e($k); ?>" value="<?php echo e($v); ?>" />
+                    <?php endif; ?>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                <label class="text-xs <?php echo e($mutedColor); ?> font-bold uppercase tracking-wide">SORT BY</label>
+                <select name="sort" onchange="this.form.submit()" class="h-9 px-3 rounded-lg border <?php echo e($borderColor); ?> <?php echo e($isDark ? 'bg-[#1f0028] text-white' : 'bg-white text-gray-800'); ?> text-sm font-semibold">
+                    <option value="trending" <?php echo e(request('sort', 'trending') == 'trending' ? 'selected' : ''); ?>>Trending</option>
+                    <option value="best_selling" <?php echo e(request('sort') == 'best_selling' ? 'selected' : ''); ?>>Best Selling</option>
+                    <option value="newest" <?php echo e(request('sort') == 'newest' ? 'selected' : ''); ?>>New</option>
+                    <option value="price_desc" <?php echo e(request('sort') == 'price_desc' ? 'selected' : ''); ?>>Price: high to low</option>
+                    <option value="price_asc" <?php echo e(request('sort') == 'price_asc' ? 'selected' : ''); ?>>Price: low to high</option>
+                </select>
+            </form>
+        </section>
+
+        <div class="flex flex-col lg:flex-row gap-12 items-start">
+
+                    <!-- Filter Sidebar -->
+                    <div class="w-full lg:w-[320px] flex-shrink-0 lg:px-0 lg:pb-4">
+                        <form action="<?php echo e(route('front.products.index')); ?>" method="GET" id="filter-form" class="space-y-5 p-5 <?php echo e($isDark ? 'bg-[#350047] border border-[#4f006a]' : 'bg-gray-50 border border-gray-200'); ?> rounded-lg">
+                            <?php if(request('collection')): ?>
+                                <input type="hidden" name="collection" value="<?php echo e(request('collection')); ?>">
+                            <?php endif; ?>
+                            <?php if(request('collection') === 'sale' || request()->boolean('discount')): ?>
+                                <input type="hidden" name="discount" value="1">
+                            <?php endif; ?>
+                            <?php if(request('collection') === 'bogo' || request()->boolean('bogo')): ?>
+                                <input type="hidden" name="bogo" value="1">
+                            <?php endif; ?>
+
+                            <div class="space-y-6">
+                                <!-- Gender Filter -->
+                                <details class="group">
+                                    <summary class="flex justify-between items-center cursor-pointer text-xs font-bold uppercase tracking-wider <?php echo e($mutedColor); ?> mb-3">
+                                        <span>Gender</span>
+                                        <span class="inline-block transition-transform group-open:rotate-180">&#9662;</span>
+                                    </summary>
+                                    <div class="space-y-2">
+                                        <label class="flex items-center justify-between cursor-pointer">
+                                            <input type="radio" name="gender" value="female" onchange="this.form.submit()" <?php echo e(request('gender') == 'female' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="flex items-center justify-between w-full px-3 py-2 rounded-lg border <?php echo e(request('gender') == 'female' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">
+                                                <span>Female</span>
+                                                <span class="text-xs opacity-70">1945</span>
+                                            </span>
+                                        </label>
+                                        <label class="flex items-center justify-between cursor-pointer">
+                                            <input type="radio" name="gender" value="male" onchange="this.form.submit()" <?php echo e(request('gender') == 'male' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="flex items-center justify-between w-full px-3 py-2 rounded-lg border <?php echo e(request('gender') == 'male' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">
+                                                <span>Male</span>
+                                                <span class="text-xs opacity-70">1038</span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </details>
+
+                                <!-- Price Filter -->
+                                <details class="group">
+                                    <summary class="flex justify-between items-center cursor-pointer text-xs font-bold uppercase tracking-wider <?php echo e($mutedColor); ?> mb-3">
+                                        <span>Price</span>
+                                        <span class="inline-block transition-transform group-open:rotate-180">&#9662;</span>
+                                    </summary>
+                                    <div class="space-y-2">
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="price_range" value="" onchange="this.form.submit()" <?php echo e(!request('price_range') ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(!request('price_range') ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">All Prices</span>
+                                        </label>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="price_range" value="0-500" onchange="this.form.submit()" <?php echo e(request('price_range') == '0-500' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(request('price_range') == '0-500' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">Under 500</span>
+                                        </label>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="price_range" value="500-1000" onchange="this.form.submit()" <?php echo e(request('price_range') == '500-1000' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(request('price_range') == '500-1000' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">500 - 1000</span>
+                                        </label>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="price_range" value="1000-2000" onchange="this.form.submit()" <?php echo e(request('price_range') == '1000-2000' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(request('price_range') == '1000-2000' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">1000 - 2000</span>
+                                        </label>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="price_range" value="2000+" onchange="this.form.submit()" <?php echo e(request('price_range') == '2000+' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(request('price_range') == '2000+' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">2000+</span>
+                                        </label>
+                                    </div>
+                                </details>
+
+                                <!-- Discount % Filter -->
+                                <details class="group">
+                                    <summary class="flex justify-between items-center cursor-pointer text-xs font-bold uppercase tracking-wider <?php echo e($mutedColor); ?> mb-3">
+                                        <span>Discount %</span>
+                                        <span class="inline-block transition-transform group-open:rotate-180">&#9662;</span>
+                                    </summary>
+                                    <div class="space-y-2">
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="discount" value="" onchange="this.form.submit()" <?php echo e(!request('discount') ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(!request('discount') ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">All Discounts</span>
+                                        </label>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="discount" value="10" onchange="this.form.submit()" <?php echo e(request('discount') == '10' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(request('discount') == '10' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">10% and above</span>
+                                        </label>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="discount" value="20" onchange="this.form.submit()" <?php echo e(request('discount') == '20' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(request('discount') == '20' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">20% and above</span>
+                                        </label>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="discount" value="30" onchange="this.form.submit()" <?php echo e(request('discount') == '30' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(request('discount') == '30' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">30% and above</span>
+                                        </label>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="discount" value="50" onchange="this.form.submit()" <?php echo e(request('discount') == '50' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(request('discount') == '50' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">50% and above</span>
+                                        </label>
+                                    </div>
+                                </details>
+
+                                <!-- Product Category Filter -->
+                                <details class="group">
+                                    <summary class="flex justify-between items-center cursor-pointer text-xs font-bold uppercase tracking-wider <?php echo e($mutedColor); ?> mb-3">
+                                        <span>Product Category</span>
+                                        <span class="inline-block transition-transform group-open:rotate-180">&#9662;</span>
+                                    </summary>
+                                    <div class="max-h-[320px] overflow-y-auto space-y-1.5 pr-1">
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="category" value="" onchange="this.form.submit()" <?php echo e(!request('category') ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="flex items-center justify-between px-3 py-2 rounded-md border <?php echo e(!request('category') ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">
+                                                <span>All Categories</span>
+                                                <span class="text-xs opacity-70"><?php echo e(App\Models\Product::where('brand_id', session('brand_id', 1))->count()); ?></span>
+                                            </span>
+                                        </label>
+                                        <?php
+                                            $productCategories = $isDark
+                                                ? [
+                                                    ['name' => 'Earrings', 'slug' => 'earrings'],
+                                                    ['name' => 'Necklace', 'slug' => 'necklace'],
+                                                    ['name' => 'Rings', 'slug' => 'rings'],
+                                                    ['name' => 'Bangles & Bracelet', 'slug' => 'bangles-bracelet'],
+                                                    ['name' => 'Necklace Set', 'slug' => 'necklace-set'],
+                                                    ['name' => 'Belt', 'slug' => 'belt'],
+                                                    ['name' => 'Maangtikkas', 'slug' => 'maangtikkas'],
+                                                    ['name' => "Men's Accessories", 'slug' => 'mens-accessories'],
+                                                    ['name' => 'Anklet', 'slug' => 'anklet'],
+                                                    ['name' => 'Mathapati', 'slug' => 'mathapati'],
+                                                    ['name' => 'Watches', 'slug' => 'watches'],
+                                                    ['name' => 'Korean', 'slug' => 'korean'],
+                                                    ['name' => 'Traditional', 'slug' => 'traditional'],
+                                                    ['name' => 'Kundan', 'slug' => 'kundan'],
+                                                    ['name' => 'Oxidised', 'slug' => 'oxidised'],
+                                                    ['name' => '18K Gold Plated', 'slug' => '18k-gold-plated'],
+                                                    ['name' => 'Fashion', 'slug' => 'fashion'],
+                                                ]
+                                                : [
+                                                    ['name' => 'Infant Sets', 'slug' => 'infant-sets'],
+                                                    ['name' => 'Kids Collections 2-4 Yrs', 'slug' => '2-4-years'],
+                                                    ['name' => 'Kids Collections 4-6 Yrs', 'slug' => '4-6-years'],
+                                                    ['name' => 'Kids Collections 6-14 Yrs', 'slug' => '6-14-years'],
+                                                    ['name' => 'Party Frocks', 'slug' => 'party-frocks'],
+                                                    ['name' => 'Festive Wear', 'slug' => 'festive-wear'],
+                                                    ['name' => 'Daily Wear', 'slug' => 'daily-wear'],
+                                                ];
+
+                                            $categoryCountMap = [];
+                                            foreach ($categories as $categoryNode) {
+                                                $categoryCountMap[$categoryNode->slug] = $categoryNode->products_count;
+                                                foreach ($categoryNode->children as $childNode) {
+                                                    $categoryCountMap[$childNode->slug] = $childNode->products_count;
+                                                }
+                                            }
+                                        ?>
+                                        <?php $__currentLoopData = $productCategories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="category" value="<?php echo e($category['slug']); ?>" onchange="this.form.submit()" <?php echo e(request('category') == $category['slug'] ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="flex items-center justify-between px-3 py-2 rounded-lg border <?php echo e(request('category') == $category['slug'] ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">
+                                                <span><?php echo e($category['name']); ?></span>
+                                                <span class="text-xs opacity-70"><?php echo e($styleCategoryCounts[$category['slug']] ?? ($categoryCountMap[$category['slug']] ?? 0)); ?></span>
+                                            </span>
+                                        </label>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </div>
+                                </details>
+
+                                <!-- Sub Categories Filter -->
+                                <details class="group">
+                                    <summary class="flex justify-between items-center cursor-pointer text-xs font-bold uppercase tracking-wider <?php echo e($mutedColor); ?> mb-3">
+                                        <span>Sub Categories</span>
+                                        <span class="inline-block transition-transform group-open:rotate-180">&#9662;</span>
+                                    </summary>
+                                    <div class="max-h-[200px] overflow-y-auto space-y-1.5 pr-1">
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="sub_category" value="" onchange="this.form.submit()" <?php echo e(!request('sub_category') ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-md border <?php echo e(!request('sub_category') ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">All Sub Categories</span>
+                                        </label>
+                                        <!-- Sub categories would be populated dynamically based on selected main category -->
+                                    </div>
+                                </details>
+
+                                <!-- Size Filter -->
+                                <?php if(isset($sizes) && $sizes->count() > 0): ?>
+                                <details class="group">
+                                    <summary class="flex justify-between items-center cursor-pointer text-xs font-bold uppercase tracking-wider <?php echo e($mutedColor); ?> mb-3">
+                                        <span>Size</span>
+                                        <span class="inline-block transition-transform group-open:rotate-180">&#9662;</span>
+                                    </summary>
+                                    <div class="flex flex-wrap gap-2">
+                                        <label class="cursor-pointer">
+                                            <input type="radio" name="size" value="" onchange="this.form.submit()" <?php echo e(!request('size') ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="inline-flex px-3 py-1.5 rounded-lg border text-xs font-semibold <?php echo e(!request('size') ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff]' : 'border-[#b87333] text-[#b87333]') : $borderColor); ?>">All</span>
+                                        </label>
+                                        <?php $__currentLoopData = $sizes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $size): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <?php if(strtolower($size) !== 'free size'): ?>
+                                            <label class="cursor-pointer">
+                                                <input type="radio" name="size" value="<?php echo e($size); ?>" onchange="this.form.submit()" <?php echo e(request('size') == $size ? 'checked' : ''); ?> class="sr-only" />
+                                                <span class="inline-flex px-3 py-1.5 rounded-lg border text-xs font-semibold <?php echo e(request('size') == $size ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff]' : 'border-[#b87333] text-[#b87333]') : $borderColor); ?>"><?php echo e($size); ?></span>
+                                            </label>
+                                            <?php endif; ?>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </div>
+                                </details>
+                                <?php endif; ?>
+
+                                <!-- Color Filter -->
+                                <details class="group">
+                                    <summary class="flex justify-between items-center cursor-pointer text-xs font-bold uppercase tracking-wider <?php echo e($mutedColor); ?> mb-3">
+                                        <span>Color</span>
+                                        <span class="inline-block transition-transform group-open:rotate-180">&#9662;</span>
+                                    </summary>
+                                    <div class="grid grid-cols-4 gap-2">
+                                        <label class="cursor-pointer">
+                                            <input type="radio" name="color" value="" onchange="this.form.submit()" <?php echo e(!request('color') ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block w-full h-8 rounded border-2 <?php echo e(!request('color') ? ($isDark ? 'border-[#d4af37]' : 'border-[#b87333]') : $borderColor); ?> bg-gradient-to-r from-red-500 via-blue-500 to-green-500"></span>
+                                        </label>
+                                        <label class="cursor-pointer">
+                                            <input type="radio" name="color" value="red" onchange="this.form.submit()" <?php echo e(request('color') == 'red' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block w-full h-8 rounded border-2 <?php echo e(request('color') == 'red' ? ($isDark ? 'border-[#d4af37]' : 'border-[#b87333]') : $borderColor); ?> bg-red-500"></span>
+                                        </label>
+                                        <label class="cursor-pointer">
+                                            <input type="radio" name="color" value="blue" onchange="this.form.submit()" <?php echo e(request('color') == 'blue' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block w-full h-8 rounded border-2 <?php echo e(request('color') == 'blue' ? ($isDark ? 'border-[#d4af37]' : 'border-[#b87333]') : $borderColor); ?> bg-blue-500"></span>
+                                        </label>
+                                        <label class="cursor-pointer">
+                                            <input type="radio" name="color" value="green" onchange="this.form.submit()" <?php echo e(request('color') == 'green' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block w-full h-8 rounded border-2 <?php echo e(request('color') == 'green' ? ($isDark ? 'border-[#d4af37]' : 'border-[#b87333]') : $borderColor); ?> bg-green-500"></span>
+                                        </label>
+                                        <label class="cursor-pointer">
+                                            <input type="radio" name="color" value="pink" onchange="this.form.submit()" <?php echo e(request('color') == 'pink' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block w-full h-8 rounded border-2 <?php echo e(request('color') == 'pink' ? ($isDark ? 'border-[#d4af37]' : 'border-[#b87333]') : $borderColor); ?> bg-pink-500"></span>
+                                        </label>
+                                        <label class="cursor-pointer">
+                                            <input type="radio" name="color" value="yellow" onchange="this.form.submit()" <?php echo e(request('color') == 'yellow' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block w-full h-8 rounded border-2 <?php echo e(request('color') == 'yellow' ? ($isDark ? 'border-[#d4af37]' : 'border-[#b87333]') : $borderColor); ?> bg-yellow-500"></span>
+                                        </label>
+                                        <label class="cursor-pointer">
+                                            <input type="radio" name="color" value="black" onchange="this.form.submit()" <?php echo e(request('color') == 'black' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block w-full h-8 rounded border-2 <?php echo e(request('color') == 'black' ? ($isDark ? 'border-[#d4af37]' : 'border-[#b87333]') : $borderColor); ?> bg-black"></span>
+                                        </label>
+                                        <label class="cursor-pointer">
+                                            <input type="radio" name="color" value="white" onchange="this.form.submit()" <?php echo e(request('color') == 'white' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block w-full h-8 rounded border-2 <?php echo e(request('color') == 'white' ? ($isDark ? 'border-[#d4af37]' : 'border-[#b87333]') : $borderColor); ?> bg-white"></span>
+                                        </label>
+                                    </div>
+                                </details>
+
+                                <!-- Fabric Filter -->
+                                <details class="group">
+                                    <summary class="flex justify-between items-center cursor-pointer text-xs font-bold uppercase tracking-wider <?php echo e($mutedColor); ?> mb-3">
+                                        <span>Fabric</span>
+                                        <span class="inline-block transition-transform group-open:rotate-180">&#9662;</span>
+                                    </summary>
+                                    <div class="space-y-2">
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="fabric" value="" onchange="this.form.submit()" <?php echo e(!request('fabric') ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(!request('fabric') ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">All Fabrics</span>
+                                        </label>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="fabric" value="cotton" onchange="this.form.submit()" <?php echo e(request('fabric') == 'cotton' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(request('fabric') == 'cotton' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">Cotton</span>
+                                        </label>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="fabric" value="silk" onchange="this.form.submit()" <?php echo e(request('fabric') == 'silk' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(request('fabric') == 'silk' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">Silk</span>
+                                        </label>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="fabric" value="georgette" onchange="this.form.submit()" <?php echo e(request('fabric') == 'georgette' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(request('fabric') == 'georgette' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">Georgette</span>
+                                        </label>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="fabric" value="chiffon" onchange="this.form.submit()" <?php echo e(request('fabric') == 'chiffon' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(request('fabric') == 'chiffon' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">Chiffon</span>
+                                        </label>
+                                    </div>
+                                </details>
+
+                                <!-- Work Filter -->
+                                <details class="group">
+                                    <summary class="flex justify-between items-center cursor-pointer text-xs font-bold uppercase tracking-wider <?php echo e($mutedColor); ?> mb-3">
+                                        <span>Work</span>
+                                        <span class="inline-block transition-transform group-open:rotate-180">&#9662;</span>
+                                    </summary>
+                                    <div class="space-y-2">
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="work" value="" onchange="this.form.submit()" <?php echo e(!request('work') ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(!request('work') ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">All Work</span>
+                                        </label>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="work" value="embroidery" onchange="this.form.submit()" <?php echo e(request('work') == 'embroidery' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(request('work') == 'embroidery' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">Embroidery</span>
+                                        </label>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="work" value="handwork" onchange="this.form.submit()" <?php echo e(request('work') == 'handwork' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(request('work') == 'handwork' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">Hand Work</span>
+                                        </label>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="work" value="machine" onchange="this.form.submit()" <?php echo e(request('work') == 'machine' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(request('work') == 'machine' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">Machine Work</span>
+                                        </label>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="work" value="printed" onchange="this.form.submit()" <?php echo e(request('work') == 'printed' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(request('work') == 'printed' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">Printed</span>
+                                        </label>
+                                    </div>
+                                </details>
+
+                                <!-- Prints & Patterns Filter -->
+                                <details class="group">
+                                    <summary class="flex justify-between items-center cursor-pointer text-xs font-bold uppercase tracking-wider <?php echo e($mutedColor); ?> mb-3">
+                                        <span>Prints & Patterns</span>
+                                        <span class="inline-block transition-transform group-open:rotate-180">&#9662;</span>
+                                    </summary>
+                                    <div class="space-y-2">
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="pattern" value="" onchange="this.form.submit()" <?php echo e(!request('pattern') ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(!request('pattern') ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">All Patterns</span>
+                                        </label>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="pattern" value="floral" onchange="this.form.submit()" <?php echo e(request('pattern') == 'floral' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(request('pattern') == 'floral' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">Floral</span>
+                                        </label>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="pattern" value="geometric" onchange="this.form.submit()" <?php echo e(request('pattern') == 'geometric' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(request('pattern') == 'geometric' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">Geometric</span>
+                                        </label>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="pattern" value="abstract" onchange="this.form.submit()" <?php echo e(request('pattern') == 'abstract' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(request('pattern') == 'abstract' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">Abstract</span>
+                                        </label>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="pattern" value="solid" onchange="this.form.submit()" <?php echo e(request('pattern') == 'solid' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(request('pattern') == 'solid' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">Solid</span>
+                                        </label>
+                                    </div>
+                                </details>
+
+                                <!-- Stores Filter -->
+                                <details class="group">
+                                    <summary class="flex justify-between items-center cursor-pointer text-xs font-bold uppercase tracking-wider <?php echo e($mutedColor); ?> mb-3">
+                                        <span>Stores</span>
+                                        <span class="inline-block transition-transform group-open:rotate-180">&#9662;</span>
+                                    </summary>
+                                    <div class="space-y-2">
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="store" value="" onchange="this.form.submit()" <?php echo e(!request('store') ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(!request('store') ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">All Stores</span>
+                                        </label>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="store" value="online" onchange="this.form.submit()" <?php echo e(request('store') == 'online' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(request('store') == 'online' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">Online Exclusive</span>
+                                        </label>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="store" value="flagship" onchange="this.form.submit()" <?php echo e(request('store') == 'flagship' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(request('store') == 'flagship' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">Flagship Store</span>
+                                        </label>
+                                        <label class="block cursor-pointer">
+                                            <input type="radio" name="store" value="outlet" onchange="this.form.submit()" <?php echo e(request('store') == 'outlet' ? 'checked' : ''); ?> class="sr-only" />
+                                            <span class="block px-3 py-2 rounded-lg border <?php echo e(request('store') == 'outlet' ? ($isDark ? 'border-[#d4af37] text-[#f3d9ff] bg-[#1f0028]' : 'border-[#b87333] text-[#b87333] bg-white') : $borderColor); ?> text-sm font-medium">Outlet Store</span>
+                                        </label>
+                                    </div>
+                                </details>
+
+                                <button type="submit" class="w-full py-2.5 bg-black text-white text-xs font-bold uppercase tracking-[0.2em] hover:<?php echo e($accentBg); ?> transition-all rounded-lg">Apply Filters</button>
+
+                                <?php if(request()->anyFilled(['category', 'min_price', 'max_price', 'size', 'sort'])): ?>
+                                <a href="<?php echo e(route('front.products.index')); ?>" class="flex items-center justify-center gap-2 text-xs font-semibold <?php echo e($mutedColor); ?> hover:<?php echo e($textColor); ?> transition-colors pt-1">
+                                    <span class="material-symbols-outlined text-sm">refresh</span> Reset Filters
+                                </a>
+                                <?php endif; ?>
+                            </div>
+                        </form>
+                    </div>
+
+            <!-- Cinematic Product Grid -->
+            <div class="flex-1 min-w-0">
+                <?php if($products->isEmpty() && !empty($festiveGallery)): ?>
+                    <div class="mb-10 text-center">
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-5 gap-y-8">
+                        <?php $__currentLoopData = $festiveGallery; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $festiveImage): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <div class="group relative flex flex-col">
+                                <?php
+                                    $festiveSrc = (string) ($festiveImage['url'] ?? '');
+                                    if ($festiveSrc !== '' && !preg_match('/^https?:\/\//i', $festiveSrc) && str_starts_with($festiveSrc, '/')) {
+                                        $festiveSrc = asset(ltrim($festiveSrc, '/'));
+                                    }
+                                    if ($festiveSrc === '') {
+                                        $festiveSrc = $listingFallbackImage;
+                                    }
+                                ?>
+                                <?php if(!empty($festiveImage['detail_url'])): ?>
+                                    <a href="<?php echo e($festiveImage['detail_url']); ?>" class="relative block overflow-hidden <?php echo e($cardBg); ?> aspect-[3/4] border <?php echo e($borderColor); ?> rounded-lg">
+                                        <img src="<?php echo e($festiveSrc); ?>" alt="<?php echo e($festiveImage['title'] ?? ('Festive Wear ' . ($index + 1))); ?>" loading="lazy" class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105" onerror="this.onerror=null;this.src='<?php echo e($listingFallbackImage); ?>';" />
+                                    </a>
+                                <?php else: ?>
+                                    <div class="relative block overflow-hidden <?php echo e($cardBg); ?> aspect-[3/4] border <?php echo e($borderColor); ?> rounded-lg">
+                                        <img src="<?php echo e($festiveSrc); ?>" alt="Festive Wear <?php echo e($index + 1); ?>" loading="lazy" class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105" onerror="this.onerror=null;this.src='<?php echo e($listingFallbackImage); ?>';" />
+                                    </div>
+                                <?php endif; ?>
+                                <div class="pt-4">
+                                    <?php if(!empty($festiveImage['title'])): ?>
+                                        <h3 class="text-sm font-semibold <?php echo e($textColor); ?> leading-snug tracking-wide uppercase mb-1"><?php echo e($festiveImage['title']); ?></h3>
+                                    <?php endif; ?>
+                                    <p class="text-xs <?php echo e($mutedColor); ?> leading-relaxed">Sample description - curated festive style for little celebrations.</p>
+                                    <p class="text-sm font-bold <?php echo e($textColor); ?> mt-1">₹699</p>
+                                    <span class="text-[10px] font-black uppercase tracking-[0.25em] <?php echo e($mutedColor); ?> opacity-70"><?php echo e($festiveImage['group']); ?></span>
+                                </div>
+                            </div>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </div>
+                <?php elseif($products->isEmpty()): ?>
+                    <?php
+                        $requestedCategory = request('category');
+                        $requestedMinPrice = is_numeric(request('min_price')) ? (float) request('min_price') : null;
+                        $requestedMaxPrice = is_numeric(request('max_price')) ? (float) request('max_price') : null;
+
+                        if (!empty($sampleGallery)) {
+                            $sampleCards = collect($sampleGallery)->take(10)->values()->map(function ($item, $idx) {
+                                $title = trim((string) ($item['title'] ?? ''));
+                                return [
+                                    'title' => $title !== '' ? $title : (($item['source_label'] ?? 'Curated Style') . ' ' . ($idx + 1)),
+                                    'price' => 699 + (($idx + 1) * 120),
+                                    'image' => (string) ($item['main_url'] ?? ''),
+                                    'label' => (string) ($item['source_label'] ?? 'Sample Preview'),
+                                ];
+                            });
+                        } else {
+                            $fallbackPool = [];
+                            if (!empty($requestedCategory) && isset($categoryFallbacks[$requestedCategory])) {
+                                $fallbackPool = $categoryFallbacks[$requestedCategory];
+                            }
+                            if (empty($fallbackPool) && !empty($requestedCategory)) {
+                                $byName = $resolveNameBasedImage(str_replace('-', ' ', (string) $requestedCategory), 1);
+                                if ($byName) {
+                                    $fallbackPool = [$byName];
+                                }
+                            }
+                            if (empty($fallbackPool)) {
+                                $fallbackPool = [$listingFallbackImage];
+                            }
+
+                            $sampleKeyword = trim(str_replace('-', ' ', (string) ($requestedCategory ?: ($isDark ? 'jewellery accessory' : 'fashion product'))));
+                            $sampleCards = collect(range(1, 10))->map(function ($idx) use ($fallbackPool, $requestedCategory, $sampleKeyword, $onlineImage) {
+                                $image = $fallbackPool[$idx - 1] ?? $onlineImage($sampleKeyword . ' product', 3000 + $idx);
+                                return [
+                                    'title' => ucfirst(str_replace('-', ' ', $requestedCategory ?: 'Curated Style')) . ' Sample ' . $idx,
+                                    'price' => 699 + ($idx * 120),
+                                    'image' => $image,
+                                    'label' => 'Sample Preview',
+                                ];
+                            });
+                        }
+
+                        // Keep fallback sample mode consistent with active price filters.
+                        $sampleCards = $sampleCards->filter(function ($sample) use ($requestedMinPrice, $requestedMaxPrice) {
+                            $price = (float) ($sample['price'] ?? 0);
+                            if ($requestedMinPrice !== null && $price < $requestedMinPrice) {
+                                return false;
+                            }
+                            if ($requestedMaxPrice !== null && $price > $requestedMaxPrice) {
+                                return false;
+                            }
+                            return true;
+                        })->values();
+                    ?>
+
+                    <div class="mb-8">
+                        <p class="text-sm <?php echo e($mutedColor); ?> italic">Showing curated sample previews while we sync this section.</p>
+                    </div>
+
+                    <?php if($sampleCards->isEmpty()): ?>
+                        <div class="py-10 text-center border <?php echo e($borderColor); ?> <?php echo e($cardBg); ?> rounded-lg">
+                            <p class="text-sm <?php echo e($mutedColor); ?>">No products match the selected price range.</p>
+                        </div>
+                    <?php else: ?>
+                        <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-5 gap-y-8">
+                            <?php $__currentLoopData = $sampleCards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $sample): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php
+                                    $categorySlug = request('category', '');
+                                    $detailUrl = $categorySlug
+                                        ? route('front.products.index', ['category' => $categorySlug])
+                                        : route('front.products.index');
+                                ?>
+                                <div class="group relative flex flex-col">
+                                    <a href="<?php echo e($detailUrl); ?>" class="relative block overflow-hidden <?php echo e($cardBg); ?> aspect-[3/4] border <?php echo e($borderColor); ?> rounded-lg group-hover:shadow-lg transition-shadow">
+                                        <img src="<?php echo e($sample['image']); ?>" alt="<?php echo e($sample['title']); ?>" class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105" onerror="this.onerror=null;this.src='<?php echo e($listingFallbackImage); ?>';" />
+
+                                        
+                                        <div class="absolute top-2 left-2 <?php echo e($isDark ? 'bg-purple-600' : 'bg-orange-600'); ?> text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                                            Quick View
+                                        </div>
+                                    </a>
+                                    <div class="pt-4">
+                                        <a href="<?php echo e($detailUrl); ?>" class="block group/link">
+                                            <h3 class="text-sm font-semibold <?php echo e($textColor); ?> leading-snug tracking-wide line-clamp-2 uppercase group-hover/link:<?php echo e($accentColor); ?> transition-colors"><?php echo e($sample['title']); ?></h3>
+                                        </a>
+                                        <p class="text-sm font-bold <?php echo e($textColor); ?> mt-1">₹<?php echo e(number_format($sample['price'], 0)); ?></p>
+                                        <span class="text-[10px] font-black uppercase tracking-[0.25em] <?php echo e($mutedColor); ?> opacity-70"><?php echo e($sample['label'] ?? 'Sample Preview'); ?></span>
+                                    </div>
+                                </div>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </div>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-5 gap-y-8">
+                        <?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php
+                            $productImageSrc = $resolveNameBasedImage($product->name, (int) $product->id);
+
+                            $candidateSources = [
+                                $product->image,
+                                optional($product->images->first())->path,
+                            ];
+
+                            if (!$productImageSrc) {
+                                foreach ($candidateSources as $candidate) {
+                                    $resolved = $resolveProductImage($candidate);
+                                    if ($resolved) {
+                                        $productImageSrc = $resolved;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (!$productImageSrc) {
+                                $categorySlug = $product->category->slug ?? null;
+                                $fallbackList = $categoryFallbacks[$categorySlug] ?? [$listingFallbackImage];
+                                $fallbackCount = count($fallbackList);
+                                if ($fallbackCount > 1) {
+                                    $fallbackIndex = ((int) $product->id) % $fallbackCount;
+                                    $productImageSrc = $fallbackList[$fallbackIndex] ?? $listingFallbackImage;
+                                } else {
+                                    $keyword = trim(str_replace('-', ' ', (string) ($categorySlug ?: 'fashion product')));
+                                    $productImageSrc = $onlineImage($keyword . ' product', 4000 + (int) $product->id);
+                                }
+                            }
+                        ?>
+                        <div class="group relative flex flex-col">
+                            <a href="<?php echo e(route('front.product.detail', $product->slug ?? $product->id)); ?>" class="relative block overflow-hidden bg-black aspect-[3/4] rounded-lg">
+                                <img src="<?php echo e($productImageSrc); ?>" alt="<?php echo e($product->name); ?>" class="w-full h-full object-cover object-top transition-transform duration-[2.5s] ease-out group-hover:scale-110 opacity-90 group-hover:opacity-100" onerror="this.onerror=null;this.src='<?php echo e($listingFallbackImage); ?>';" />
+
+                                
+                                <?php if($product->compare_price > $product->price): ?>
+                                <div class="absolute bottom-0 right-0 <?php echo e($isDark ? 'bg-white text-black' : 'bg-black text-white'); ?> px-4 py-2 text-[10px] font-black tracking-[0.2em] transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 uppercase">
+                                     Save <?php echo e(round((($product->compare_price - $product->price) / $product->compare_price) * 100)); ?>%
+                                </div>
+                                <?php endif; ?>
+
+                                
+                                <div class="absolute inset-0 bg-<?php echo e($isDark ? 'purple-900' : 'orange-900'); ?>/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            </a>
+                            <button
+                                type="button"
+                                class="wishlist-btn absolute top-3 right-3 z-20 h-9 w-9 rounded-full border border-white/70 bg-white/90 text-gray-700 shadow-sm backdrop-blur transition hover:scale-105 hover:bg-white <?php echo e($product->is_wishlisted ? 'text-red-500' : ''); ?>"
+                                data-product-id="<?php echo e($product->id); ?>"
+                                aria-label="Add to wishlist"
+                                title="Add to wishlist"
+                            >
+                                <svg class="wishlist-icon mx-auto h-4 w-4 <?php echo e($product->is_wishlisted ? 'fill-current' : ''); ?>" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                </svg>
+                            </button>
+
+                            <div class="pt-6 relative">
+                                <span class="text-[9px] font-black uppercase tracking-[0.3em] <?php echo e($mutedColor); ?> mb-2 block opacity-60">
+                                    <?php echo e($product->category?->name ?? 'Collection'); ?>
+
+                                </span>
+                                <a href="<?php echo e(route('front.product.detail', $product->slug ?? $product->id)); ?>" class="block group/link">
+                                    <h3 class="text-sm font-semibold <?php echo e($textColor); ?> leading-snug tracking-wide line-clamp-2 min-h-[2.5rem] group-hover/link:<?php echo e($accentColor); ?> transition-colors uppercase">
+                                        <?php echo e($product->name); ?>
+
+                                    </h3>
+                                </a>
+                                <div class="flex items-baseline gap-3 mt-4">
+                                    <span class="text-base font-bold <?php echo e($textColor); ?> tracking-tighter">₹<?php echo e(number_format($product->price, 0)); ?></span>
+                                    <?php if($product->compare_price > $product->price): ?>
+                                    <span class="text-xs <?php echo e($mutedColor); ?> line-through opacity-50 tracking-tighter font-medium">₹<?php echo e(number_format($product->compare_price, 0)); ?></span>
+                                    <?php endif; ?>
+                                </div>
+
+                                
+                                <div class="absolute top-6 right-0 w-1.5 h-1.5 rounded-full <?php echo e($accentBg); ?> opacity-0 group-hover:opacity-100 transition-opacity animate-pulse shadow-[0_0_8px_currentColor]"></div>
+                            </div>
+                        </div>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </div>
+
+                    <!-- Custom Pagination Minimalist -->
+                    <div class="mt-20 flex justify-center border-t <?php echo e($borderColor); ?> pt-12">
+                        <?php echo e($products->links('vendor.pagination.tailwind')); ?>
+
+                    </div>
+                <?php endif; ?>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Premium Hover Styles */
+    .glass-card {
+        box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1);
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-card:hover {
+        box-shadow: 0 20px 60px -15px rgba(0,0,0,0.2);
+        transform: translateY(-2px);
+    }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+</style>
+
+<script>
+    (function () {
+        const rail = document.getElementById('collection-story-rail');
+        const track = document.getElementById('collection-story-track');
+        if (!rail || !track || window.innerWidth >= 768) return;
+
+        const items = track.children;
+        if (items.length <= 1) return;
+
+        let current = 0;
+        const step = () => {
+            current = (current + 1) % items.length;
+            rail.scrollTo({ left: current * rail.clientWidth, behavior: 'smooth' });
+        };
+
+        track.style.display = 'flex';
+        track.style.width = `${items.length * 100}%`;
+        Array.from(items).forEach((el) => {
+            el.style.minWidth = `${100 / items.length}%`;
+        });
+
+        setInterval(step, 4200);
+    })();
+</script>
+
+<?php if(request('collection') === 'sale' || request()->boolean('discount')): ?>
+    <div id="tnc-modal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 bg-black/50">
+        <div class="w-full max-w-3xl bg-white border border-gray-200 shadow-2xl">
+            <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+                <p class="text-sm font-semibold tracking-wide">T&amp;C</p>
+                <button type="button" id="tnc-close-btn" class="w-8 h-8 inline-flex items-center justify-center border border-gray-300 text-gray-700 hover:bg-gray-50" aria-label="Close">
+                    &times;
+                </button>
+            </div>
+            <div class="p-5">
+                <ul class="list-disc pl-5 text-sm text-gray-700 space-y-2">
+                    <li>Applicable on both Sale &amp; Non-Sale Products.</li>
+                    <li>Max discount: ₹1,000.</li>
+                    <li>Valid on Selected Categories.</li>
+                    <li>Only on website and app.</li>
+                    <li>Limited period offer.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            var openBtn = document.getElementById('tnc-open-btn');
+            var modal = document.getElementById('tnc-modal');
+            var closeBtn = document.getElementById('tnc-close-btn');
+            if (!openBtn || !modal || !closeBtn) return;
+
+            function openModal() {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal() {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.style.overflow = '';
+            }
+
+            openBtn.addEventListener('click', openModal);
+            closeBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) closeModal();
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') closeModal();
+            });
+        })();
+    </script>
+<?php endif; ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.front.' . $theme, array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\My projects\CP\avnee\avnee_files\resources\views/front/product/index.blade.php ENDPATH**/ ?>
