@@ -4,7 +4,16 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
-return Application::configure(basePath: dirname(__DIR__))
+$builder = Application::configure(basePath: dirname(__DIR__));
+
+$runtimeEnv = $_SERVER['APP_ENV'] ?? $_ENV['APP_ENV'] ?? getenv('APP_ENV') ?: null;
+
+if ($runtimeEnv === 'local' && is_file(__DIR__.'/../local.env')) {
+    // Use a separate env file for local development when APP_ENV=local.
+    $builder->create()->loadEnvironmentFrom('local.env');
+}
+
+return $builder
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
         commands: __DIR__.'/../routes/console.php',

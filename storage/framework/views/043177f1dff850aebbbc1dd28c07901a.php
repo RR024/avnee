@@ -27,7 +27,7 @@
     n.callMethod.apply(n,arguments):n.queue.push(arguments)};
     if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
     n.queue=[];t=b.createElement(e);t.async=!0;
-    s=b.src=v;s.parentNode.insertBefore(t,s)}(window, document,'script',
+    t.src=v;s.parentNode.insertBefore(t,s)}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', "<?php echo e($settings['facebook_pixel_id'] ?? ''); ?>");
     fbq('track', 'PageView');
@@ -759,7 +759,7 @@
 
     /* Footer newsletter box */
     .footer-newsletter {
-      border: 1px solid var(--studio-dark-pink);
+      border-color: #C54B8C;
       padding: 24px;
       background: rgba(251, 244, 230, 0.1);
       box-shadow: 0 6px 16px rgba(199, 91, 110, 0.1);
@@ -772,25 +772,7 @@
       box-shadow: 0 6px 16px rgba(199, 91, 110, 0.1);
     }
 
-    /* Add borders and shadows to all main sections */
-    #hero-slider,
-    #just-in,
-    #best-buy-static,
-    #home-lookbook,
-    #home-top-collections,
-    #shop-by-price-static,
-    #shop-by-style-static,
-    #studio-edits-slider,
-    #customer-stories,
-    #about-story {
-      border: 1px solid var(--studio-dark-pink);
-      box-shadow: 0 4px 12px rgba(199, 91, 110, 0.15);
-      margin: 0.5rem 0;
-      border-radius: 0.5rem;
-    }
-
-    /* Add borders to product cards and category blocks */
-    .swiper-slide,
+    /* Cards and category blocks get border/shadow — NOT full-width sections */
     .top-col-card,
     .mega-card {
       border: 1px solid var(--studio-dark-pink) !important;
@@ -802,8 +784,7 @@
       stroke: var(--studio-dark-pink) !important;
     }
 
-    /* Section dividers — dark pink line between every section */
-    main > #hero-slider,
+    /* Section divider: mulberry line, 80% width centered */
     main > #just-in,
     main > #best-buy-static,
     main > #home-lookbook,
@@ -813,36 +794,35 @@
     main > #studio-edits-slider,
     main > #customer-stories,
     main > #about-story {
-      border-bottom: 2px solid rgba(199, 91, 110, 0.38);
+      position: relative;
     }
 
-    /* Slightly thicker dividers for key homepage blocks */
-    main > #just-in,
-    main > #shop-by-price-static,
-    main > #shop-by-style-static,
-    main > #best-buy-static,
-    main > #home-lookbook,
-    main > #home-top-collections,
-    main > #customer-stories {
-      border-bottom-width: 3px;
-    }
-
-    /* Keep the hero divider below the image instead of touching it */
-    main > #hero-slider {
-      border-bottom: 0;
-      padding-bottom: 1rem;
-    }
-
-    main > #hero-slider::after {
+    main > #just-in::before,
+    main > #best-buy-static::before,
+    main > #home-lookbook::before,
+    main > #home-top-collections::before,
+    main > #shop-by-style-static::before,
+    main > #studio-edits-slider::before,
+    main > #customer-stories::before,
+    main > #about-story::before {
       content: '';
       position: absolute;
-      left: calc(50% - 50vw);
-      bottom: 0;
-      width: 100vw;
-      height: 2px;
-      background: rgba(119, 7, 55, 0.35);
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      height: 3px;
+      background: #770737;
       pointer-events: none;
+      border-bottom: none;
     }
+
+    /* Hero section: clean bottom line via pseudo-element, no extra border */
+    main > #hero-slider {
+      margin-bottom: 1.5rem;
+      padding-bottom: 0;
+    }
+
   </style>
   <?php echo $__env->yieldPushContent('styles'); ?>
 </head>
@@ -938,7 +918,7 @@
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </button>
-              <div id="search-results" class="absolute left-0 w-[320px] top-full mt-1 bg-[#C75B6E] border border-[#770737]/20 shadow-2xl z-50 hidden max-h-[400px] overflow-y-auto rounded-sm">
+              <div id="search-results" class="absolute left-0 w-[320px] top-full mt-1 bg-white border border-[#770737]/20 shadow-2xl z-50 hidden max-h-[400px] overflow-y-auto rounded-sm">
                   <!-- Results injected here -->
               </div>
             </div>
@@ -949,8 +929,8 @@
         <div class="flex flex-1 justify-center lg:w-1/3">
           <a href="<?php echo e(route('front.home')); ?>" id="logo" class="flex flex-col items-center shrink-0 group">
             <span class="brand-wordmark transition-all duration-500">
-              <span class="brand-wordmark-main">AVNEE</span>
-              <span class="brand-wordmark-sub">Collections</span>
+              <span class="brand-wordmark-main" style = "color: #C75B6E;">AVNEE</span>
+              <span class="brand-wordmark-sub" style = "color: #C75B6E; font-size: 14px;">Collections</span>
             </span>
           </a>
         </div>
@@ -1243,7 +1223,7 @@
         <!-- Column 4: Newsletter -->
         <div>
           <h4 class="footer-heading text-pastel-pink font-semibold tracking-[0.12em] uppercase text-[15px]">Newsletter</h4>
-          <div class="footer-newsletter border-pastel-pink/20 bg-top-bar-dark/40">
+          <div class="footer-newsletter bg-top-bar-dark/40" style="border:2px solid #C54B8C !important;">
             <p class="text-pastel-pink/75 text-[15px] leading-7 mb-5">
               Subscribe to get notified about product launches, special offers and company news.
             </p>
@@ -1257,7 +1237,7 @@
               </button>
               <p id="studio-newsletter-msg" class="text-sm text-green-300 hidden">✓ Thanks for subscribing!</p>
             </form>
-            <div class="mt-5 pt-4 border-t border-pastel-pink/20 text-[14px] text-pastel-pink/85 space-y-2">
+            <div class="w-[80%] mx-auto mt-5 pt-4 border-t border-[#C75B6E] text-[14px] text-pastel-pink/85 space-y-2">
               <p><span class="font-semibold">Call Us:</span> <a href="tel:+91908671144" class="hover:text-pastel-pink">+91 908671144</a></p>
               <p><span class="font-semibold">Mail:</span> <a href="mailto:studio@avneecollections.com" class="hover:text-pastel-pink">studio@avneecollections.com</a></p>
               <p><span class="font-semibold">Alt Mail:</span> <a href="mailto:avnee.collections@gmail.com" class="hover:text-pastel-pink">avnee.collections@gmail.com</a></p>
@@ -1828,32 +1808,31 @@
 
         // Mobile Menu Toggle Logic
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const closeMobileMenuBtn = document.getElementById('close-mobile-menu');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const mobileMenuBackdrop = document.getElementById('mobile-menu-backdrop');
-        const mobileMenuContent = document.getElementById('mobile-menu-content');
+        const closeMobileMenuBtn = document.getElementById('mobile-menu-close');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+        const mobileMenuPanel = document.getElementById('mobile-menu-panel');
 
         const openMobileMenu = () => {
-            mobileMenu.classList.remove('invisible');
-            setTimeout(() => {
-                mobileMenuBackdrop.classList.add('opacity-100');
-                mobileMenuContent.classList.remove('-translate-x-full');
-            }, 10);
-            document.body.style.overflow = 'hidden';
+          mobileMenuOverlay?.classList.remove('hidden');
+          setTimeout(() => {
+            mobileMenuOverlay?.classList.add('opacity-100');
+            mobileMenuPanel?.classList.remove('-translate-x-full');
+          }, 10);
+          document.body.style.overflow = 'hidden';
         };
 
         const closeMobileMenu = () => {
-            mobileMenuBackdrop.classList.remove('opacity-100');
-            mobileMenuContent.classList.add('-translate-x-full');
-            setTimeout(() => {
-                mobileMenu.classList.add('invisible');
-                document.body.style.overflow = '';
-            }, 300);
+          mobileMenuOverlay?.classList.remove('opacity-100');
+          mobileMenuPanel?.classList.add('-translate-x-full');
+          setTimeout(() => {
+            mobileMenuOverlay?.classList.add('hidden');
+            document.body.style.overflow = '';
+          }, 300);
         };
 
         mobileMenuBtn?.addEventListener('click', openMobileMenu);
         closeMobileMenuBtn?.addEventListener('click', closeMobileMenu);
-        mobileMenuBackdrop?.addEventListener('click', closeMobileMenu);
+        mobileMenuOverlay?.addEventListener('click', closeMobileMenu);
 
         // Mobile Search Toggle Logic
         const mobileSearchBtn = document.getElementById('mobile-search-btn');
@@ -1902,8 +1881,6 @@
       });
     });
   </script>
-
-  <?php echo $__env->yieldPushContent('scripts'); ?>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
       const desktopSearch = document.getElementById('search-input');
@@ -1972,6 +1949,7 @@
         });
     });
   </script>
+  <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
 
 </html>

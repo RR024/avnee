@@ -90,6 +90,7 @@ class ProductController extends Controller
             'hand-made' => ['sort' => 'newest', 'category' => 'jewellery-gallery', 'collection' => 'hand-made', 'collection_title' => 'Hand Made'],
             'oxidised' => ['sort' => 'newest', 'category' => 'jewellery-gallery', 'collection' => 'oxidised', 'collection_title' => 'Oxidised'],
             'cultural' => ['sort' => 'newest', 'category' => 'jewellery-gallery', 'collection' => 'cultural', 'collection_title' => 'Cultural'],
+            'jewellery-new-arrivals' => ['sort' => 'newest', 'category' => 'jewellery-gallery', 'collection' => 'jewellery-new-arrivals', 'collection_title' => 'New Arrivals'],
         ];
 
         if (!isset($map[$collection])) {
@@ -98,7 +99,7 @@ class ProductController extends Controller
 
         $collectionConfig = $map[$collection];
 
-        if (in_array($collection, ['organizers', 'gifting', 'hand-made', 'oxidised', 'cultural'], true)) {
+        if (in_array($collection, ['organizers', 'gifting', 'hand-made', 'oxidised', 'cultural', 'jewellery-new-arrivals'], true)) {
             session(['theme' => 'jewellery', 'brand_id' => 2]);
         } else {
             session(['theme' => 'studio', 'brand_id' => 1]);

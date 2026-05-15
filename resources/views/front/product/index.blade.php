@@ -18,6 +18,7 @@
         'bogo' => 'BOGO Collection',
         'organizers' => 'Organizers',
         'gifting' => 'Gifting',
+        'jewellery-new-arrivals' => 'New Arrivals',
         'all-collections' => 'All Collections',
         'party-frocks' => 'Party Frocks',
         'summer-collections' => 'Summer Collections',
@@ -82,7 +83,7 @@
         ],
     ];
     $activeCollection = request('collection');
-    $collectionHeadingPriority = ['all-collections', 'party-frocks', 'summer-collections', 'summer-classics', 'birthday-glam', 'ugadi-sale', 'festive-wear', 'daily-wear', 'all-sarees', 'printed-cotton', 'georgette', 'semi-silk'];
+    $collectionHeadingPriority = ['all-collections', 'party-frocks', 'summer-collections', 'summer-classics', 'birthday-glam', 'ugadi-sale', 'festive-wear', 'daily-wear', 'all-sarees', 'printed-cotton', 'georgette', 'semi-silk', 'jewellery-new-arrivals'];
     $formatFilterLabel = function (?string $raw): string {
         $raw = (string) $raw;
         if ($raw === '') {
@@ -298,6 +299,10 @@
                 <a href="{{ route($isDark ? 'front.jewellery' : 'front.home') }}" class="hover:{{ $textColor }} transition-colors">HOME</a>
                 <span class="opacity-40">&gt;&gt;</span>
                 <span class="{{ $textColor }}">{{ strtoupper($formatFilterLabel($selectedCollectionSlug)) }}</span>
+            @elseif($selectedCollectionSlug === 'jewellery-new-arrivals')
+                <a href="{{ route($isDark ? 'front.jewellery' : 'front.home') }}" class="hover:{{ $textColor }} transition-colors">HOME</a>
+                <span class="opacity-40">&gt;&gt;</span>
+                <span class="{{ $textColor }}">NEW ARRIVALS</span>
             @elseif($forceWatchImages)
                 <a href="{{ route($isDark ? 'front.jewellery' : 'front.home') }}" class="hover:{{ $textColor }} transition-colors">HOME</a>
                 <span class="opacity-40">&gt;&gt;</span>
@@ -927,10 +932,16 @@
                             @foreach($sampleCards as $index => $sample)
                                 @php
                                     $categorySlug = request('category', '');
-                                    $detailUrl = $sampleDetailUrl
-                                        ?? ($categorySlug
-                                            ? route('front.products.index', ['category' => $categorySlug])
-                                            : route('front.products.index'));
+                                    $activeCol = request('collection', '');
+                                    if ($activeCol === 'organizers' || $categorySlug === 'organizers') {
+                                        $sampleSlug = \Illuminate\Support\Str::slug($sample['title']);
+                                        $detailUrl = route('front.demo.product', ['slug' => $sampleSlug, 'price' => $sample['price']]);
+                                    } else {
+                                        $detailUrl = $sampleDetailUrl
+                                            ?? ($categorySlug
+                                                ? route('front.products.index', ['category' => $categorySlug])
+                                                : route('front.products.index'));
+                                    }
                                 @endphp
                                 <div class="group relative flex flex-col">
                                     <a href="{{ $detailUrl }}" class="relative block overflow-hidden {{ $cardBg }} aspect-[3/4] border {{ $borderColor }} rounded-lg group-hover:shadow-lg transition-shadow">
