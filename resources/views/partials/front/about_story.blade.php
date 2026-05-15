@@ -13,7 +13,7 @@
 <section id="about-story" class="py-16 sm:py-24 {{ $bgColor }} relative overflow-hidden transition-colors duration-700">
     <!-- Subtle Background Elements -->
     <div class="absolute top-0 left-0 w-64 h-64 {{ $isJewellery ? 'bg-[#350047]/20' : 'bg-[#F8C8DC]/20' }} rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-    <div class="absolute bottom-0 right-0 w-96 h-96 {{ $isJewellery ? 'bg-[#d4af37]/5' : 'bg-mulberry/5' }} rounded-full blur-3xl translate-x-1/3 translate-y-1/3"></div>
+    <div class="absolute bottom-0 right-0 w-96 h-96 {{ $isJewellery ? 'bg-[##8b4c6e]/5' : 'bg-mulberry/5' }} rounded-full blur-3xl translate-x-1/3 translate-y-1/3"></div>
 
     <div class="max-w-[1240px] mx-auto px-4 sm:px-8 lg:px-10 relative z-10">
         <div class="text-center mb-16">
@@ -21,10 +21,10 @@
             <h2 class="font-heading text-4xl sm:text-6xl {{ $headingColor }} font-normal tracking-[0.1em] mb-6 uppercase">
                 AVNEE <span class="block text-2xl sm:text-3xl mt-2 tracking-[0.3em] font-light {{ $subtitleColor }}">Our Story</span>
             </h2>
-            <div class="w-24 h-[1px] bg-[#d4af37]/30 mx-auto"></div>
+            <div class="w-24 h-[1px] bg-[##8b4c6e]/30 mx-auto"></div>
             @else
             <h2 class="studio-section-heading mb-4">
-                <span class="block">Avnee</span>
+                <span class="block"style = "color: #C75B6E;">Avnee</span>
                 <span class="mt-3 block text-2xl sm:text-3xl font-light tracking-[0.28em] text-mulberry/85">Our Story</span>
             </h2>
             @endif

@@ -9,23 +9,55 @@
     $cardBg = $isJewellery ? 'bg-[#350047]/20 border-white/5' : 'bg-white border-mulberry/5';
     $primaryNavColor = $isJewellery ? '#d4af37' : '#770737';
     $displayReviews = $reviews->take(9);
-    
-    // Get customer stories from database
-    $customerStories = \App\Models\CustomerStory::active()->ordered()->get();
-    
-    // Fallback to hardcoded images if no stories in database
-    $storyImageMap = [
-        'aishwarya rao' => asset('images/customer-stories/aishwarya-rao.png'),
-        'divya menon' => asset('images/customer-stories/divya-menon.png'),
-        'kavya nair' => asset('images/customer-stories/kavya-nair.png'),
-        'latha iyer' => asset('images/customer-stories/latha-iyer.png'),
-        'meena sharma' => asset('images/customer-stories/meena-sharma.png'),
-        'pooja verma' => asset('images/customer-stories/pooja-verma.png'),
-        'priya patel' => asset('images/customer-stories/priya-patel.png'),
-        'riya mehta' => asset('images/customer-stories/riya-mehta.png'),
-        'sneha reddy' => asset('images/customer-stories/sneha-reddy.png'),
+
+    $staticStories = [
+        [
+            'name' => 'Aishwarya Rao',
+            'image' => asset('storage/customer-stories/aishwarya-rao.png'),
+            'quote' => 'Got this outfit from Avnee Collections for our family celebration and honestly it looked even prettier in real life ❤️ The fabric was so soft and comfortable, she wore it for hours without any fuss. Everyone at home kept asking where we bought it from! The fit, colors and finishing were just perfect. Thank you for making her feel so special 🥰',
+        ],
+        [
+            'name' => 'Divya Menon',
+            'image' => asset('storage/customer-stories/divya-menon.png'),
+            'quote' => 'Absolutely loved this frock from Avnee Collections 💕 The quality, stitching and finishing were beyond expectations. My daughter felt like a little princess and didn’t want to take it off even after the party 😄 The dress looked so elegant in pictures and was super comfortable at the same time. Thank you for making special moments even more beautiful ✨',
+        ],
+        [
+            'name' => 'Kavya Nair',
+            'image' => asset('storage/customer-stories/kavya-nair.png'),
+            'quote' => 'Ordered this traditional outfit from Avnee Collections for a family function and we are genuinely so happy with the purchase 💛 The dress looked absolutely beautiful and the quality was amazing. My daughter usually gets uncomfortable in festive wear, but this one was so soft and easy for her to wear all evening. We received so many compliments from family members 😍 Will definitely shop again!',
+        ],
+        [
+            'name' => 'Latha Iyer',
+            'image' => asset('storage/customer-stories/latha-iyer.png'),
+            'quote' => 'One of the prettiest dresses we’ve purchased for our daughter 💜 The colors were so elegant and unique, and the dress looked exactly like the pictures. What impressed me most was the comfort - light, soft and perfect for kids to wear during long functions. My little one felt so confident and happy wearing it 🥹✨ Thank you Avnee Collections for such beautiful designs and quality!',
+        ],
+        [
+            'name' => 'Meena Sharma',
+            'image' => asset('storage/customer-stories/meena-sharma.png'),
+            'quote' => 'Couldn’t resist buying this tiny pattu pavadai from Avnee Collections for our little princess ❤️ The outfit was so soft, lightweight and baby-friendly while still looking super traditional and festive. She was comfortable the entire time and we got endless compliments from everyone at home 😍 The quality and detailing are honestly beautiful. Definitely one of our favorite purchases for her so far!',
+        ],
+        [
+            'name' => 'Pooja Verma',
+            'image' => asset('storage/customer-stories/pooja-verma.png'),
+            'quote' => 'My daughter absolutely loved this dress from Avnee Collections 💜 It has such a classy and trendy look while still being age-appropriate and comfortable. The material felt premium, the fit was perfect and the color looked even more beautiful in natural light. She kept getting compliments everywhere we went 😊 Definitely coming back for more western collections!',
+        ],
+        [
+            'name' => 'Priya Patel',
+            'image' => asset('storage/customer-stories/priya-patel.png'),
+            'quote' => 'Bought this lovely dress from Avnee Collections for my granddaughter and it was such a beautiful choice 🌸 The fabric felt very soft on her skin and the design was simple, elegant and perfect for everyday special moments. Seeing her so happy and comfortable in it made my heart full ❤️ Truly loved the quality and attention to detail. Thank you Avnee Collections!',
+        ],
+        [
+            'name' => 'Riya Mehta',
+            'image' => asset('storage/customer-stories/riya-mehta.png'),
+            'quote' => 'This outfit from Avnee Collections made my daughter feel so confident and special ✨ She wore it for a festive get-together with her friends and everyone kept complimenting her look 💜 The dress had such rich colors and beautiful detailing while still being very comfortable for kids. Loved how elegant and unique it looked in photos too 😍 Definitely one of our favorite festive purchases!',
+        ],
+        [
+            'name' => 'Sneha Reddy',
+            'image' => asset('storage/customer-stories/sneha-reddy.png'),
+            'quote' => 'Absolutely loved this dress from Avnee Collections ❤️ It has such a simple, elegant and comfortable look - perfect for casual outings, birthdays or even family dinners. The fabric was super breathable and the fit was just perfect for my daughter. She felt so confident and comfortable wearing it all day 😊 Definitely recommending Avnee Collections to other moms!',
+        ],
     ];
-    $storyImageFallbacks = array_values($storyImageMap);
+    $storyCount = count($staticStories);
 @endphp
 
 <section id="customer-stories" class="py-16 sm:py-24 {{ $bgColor }} relative overflow-hidden transition-colors duration-700">
@@ -43,12 +75,12 @@
     <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="text-center mb-12 sm:mb-20">
             @if($isJewellery)
-            <h3 class="{{ $accentColor }} font-logo text-2xl sm:text-3xl uppercase tracking-[0.4em] mb-4">Customer Stories</h3>
+            <h3 class="{{ $accentColor }} font-logo text-2xl sm:text-3xl uppercase tracking-[0.4em] mb-4" >Customer Stories</h3>
             <h2 class="font-heading text-3xl sm:text-[2.6rem] font-normal {{ $headingColor }} mb-12 tracking-[0.2em] uppercase decoration-[#f3d9ff]/30 underline underline-offset-[12px]">
                 Cherished Moments...
             </h2>
             @else
-            <h2 class="studio-section-heading mb-6 sm:mb-10">Customer Stories</h2>
+            <h2 class="studio-section-heading mb-6 sm:mb-10" style = "color: #C75B6E;">Customer Stories</h2>
             <p class="font-heading text-2xl sm:text-4xl text-mulberry/90 font-normal tracking-[0.12em] mb-10 max-w-2xl mx-auto leading-snug">Loved by Little Princesses...</p>
             @endif
             <div class="max-w-2xl mx-auto space-y-4">
@@ -73,83 +105,34 @@
             <!-- Swiper Container -->
             <div class="swiper stories-swiper overflow-hidden pb-10">
                 <div class="swiper-wrapper items-stretch">
-                    {{-- Display Customer Stories from database --}}
-@if($customerStories->isNotEmpty())
-    @foreach($customerStories as $story)
+                    {{-- Display fixed customer stories --}}
+@foreach($staticStories as $story)
         <div class="swiper-slide h-auto self-stretch">
-            <div class="{{ $cardBg }} rounded-sm overflow-hidden flex flex-col h-full shadow-[0_20px_50px_rgba(0,0,0,0.05)] border group/card hover:shadow-2xl transition-all duration-700 backdrop-blur-sm">
+            <div class="{{ $cardBg }} rounded-sm overflow-hidden flex flex-col h-[760px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border group/card hover:shadow-2xl transition-all duration-700 backdrop-blur-sm">
                 <!-- Customer Image -->
                 <div class="relative aspect-[4/3] overflow-hidden {{ $isJewellery ? 'bg-[#1a0023]' : 'bg-[#fef5f7]' }}">
-                    @if($story->image_path)
-                        <img src="{{ asset('storage/' . $story->image_path) }}" alt="{{ $story->title }}" class="w-full h-full object-cover transition-transform duration-[2s] group-hover/card:scale-110" />
-                    @else
-                        @php
-                            $reviewNameKey = strtolower(trim((string) ($displayReviews[$loop->index % $displayReviews->count()]->user_name ?? $displayReviews[$loop->index % $displayReviews->count()]->user?->name ?? '')));
-                            $storyImage = $storyImageMap[$reviewNameKey] ?? $storyImageFallbacks[$loop->index % count($storyImageFallbacks)];
-                        @endphp
-                        <img src="{{ $storyImage }}" alt="{{ $story->title }}" class="w-full h-full object-cover transition-transform duration-[2s] group-hover/card:scale-110" />
-                    @endif
+                    <img src="{{ $story['image'] }}" alt="{{ $story['name'] }}" class="w-full h-full object-cover transition-transform duration-[2s] group-hover/card:scale-110" />
                     <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20 opacity-0 group-hover/card:opacity-100 transition-opacity"></div>
                 </div>
 
                 <!-- Story Content -->
                 <div class="p-8 sm:p-10 flex flex-col items-center text-center flex-1">
-                    <p class="{{ $isJewellery ? 'text-[#e9d5ff]/90' : 'text-gray-700' }} text-base sm:text-lg leading-relaxed italic mb-8 flex-1 font-medium tracking-tight px-2 min-h-[120px]">
-                        {{ $story->subtitle ?? 'Amazing experience with AVNEE Collection!' }}
-                    </p>
+                    <p class="{{ $isJewellery ? 'text-[#e9d5ff]/90' : 'text-gray-700' }} text-sm sm:text-base leading-relaxed italic mb-8 font-medium tracking-tight px-2 min-h-[260px]">
+    {{ $story['quote'] }}
+</p>
 
-                    <div class="space-y-1.5 mb-8">
-                        <h4 class="{{ $accentColor }} font-bold text-xl tracking-tight uppercase leading-tight">{{ $story->title }}</h4>
+                    <div class="space-y-1.5 mt-auto mb-8">`
+                        <h4 class="{{ $accentColor }} font-bold text-xl tracking-tight uppercase leading-tight">{{ $story['name'] }}</h4>
                         <p class="text-xs {{ $isJewellery ? 'text-[#e9d5ff]/40' : 'text-gray-400' }} font-bold uppercase tracking-[0.2em]">Happy Customer</p>
                     </div>
 
-                    <a href="{{ $story->product_url }}" class="inline-block text-xs font-black uppercase tracking-[0.3em] text-white bg-[#d4af37] hover:bg-[#b8941f] px-6 py-2.5 rounded-sm transition-all shadow-md hover:shadow-lg">
-                        {{ $story->button_text }}
-                    </a>
-                </div>
-            </div>
-        </div>
-    @endforeach
-@else
-    {{-- Fallback to review-based stories if no customer stories in database --}}
-    @foreach($displayReviews as $review)
-        @php
-            $reviewNameKey = strtolower(trim((string) ($review->user_name ?? $review->user?->name ?? '')));
-            $storyImage = $storyImageMap[$reviewNameKey] ?? $storyImageFallbacks[$loop->index % count($storyImageFallbacks)];
-        @endphp
-        <div class="swiper-slide h-auto self-stretch">
-            <div class="{{ $cardBg }} rounded-sm overflow-hidden flex flex-col h-full shadow-[0_20px_50px_rgba(0,0,0,0.05)] border group/card hover:shadow-2xl transition-all duration-700 backdrop-blur-sm">
-                <!-- Customer Image -->
-                <div class="relative aspect-[4/3] overflow-hidden {{ $isJewellery ? 'bg-[#1a0023]' : 'bg-[#fef5f7]' }}">
-                    <img src="{{ $storyImage }}" alt="{{ $review->user_name ?? $review->user?->name ?? 'AVNEE Customer' }}" class="w-full h-full object-cover transition-transform duration-[2s] group-hover/card:scale-110" />
-                    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20 opacity-0 group-hover/card:opacity-100 transition-opacity"></div>
-                </div>
-
-                <!-- Review Content -->
-                <div class="p-8 sm:p-10 flex flex-col items-center text-center flex-1">
-                    <p class="{{ $isJewellery ? 'text-[#e9d5ff]/90' : 'text-gray-700' }} text-base sm:text-lg leading-relaxed italic mb-8 flex-1 font-medium tracking-tight px-2 min-h-[120px]">
-                        {{ $review->comment }}
-                    </p>
-
-                    <div class="space-y-1.5 mb-8">
-                        <h4 class="{{ $accentColor }} font-bold text-xl tracking-tight uppercase leading-tight">{{ $review->user_name ?? $review->user?->name ?? 'AVNEE Customer' }}</h4>
-                        <p class="text-xs {{ $isJewellery ? 'text-[#e9d5ff]/40' : 'text-gray-400' }} font-bold uppercase tracking-[0.2em]">{{ $review->location ?? 'AVNEE Customer' }}</p>
-                    </div>
-
-                    @if($review->product)
-                    <a href="{{ route('front.product.detail', $review->product->slug) }}" class="inline-block text-xs font-black uppercase tracking-[0.3em] text-white bg-[#d4af37] hover:bg-[#b8941f] px-6 py-2.5 rounded-sm transition-all shadow-md hover:shadow-lg">
-                        View Product
-                    </a>
-                    @else
-                    <a href="{{ route('front.products.index') }}" class="inline-block text-xs font-black uppercase tracking-[0.3em] text-white bg-[#d4af37] hover:bg-[#b8941f] px-6 py-2.5 rounded-sm transition-all shadow-md hover:shadow-lg">
+                    <a href="{{ route('front.products.index') }}" class="inline-block text-xs font-black uppercase tracking-[0.3em] text-white bg-[#C75B6E] hover:bg-[#770737] px-6 py-2.5 rounded-sm transition-all shadow-md hover:shadow-lg">
                         View Products
                     </a>
-                    @endif
                 </div>
             </div>
         </div>
-    @endforeach
-@endif
+@endforeach
                 </div>
             </div>
 
@@ -166,7 +149,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         if (typeof Swiper !== 'undefined') {
-            const reviewCount = {{ $displayReviews->count() }};
+            const reviewCount = {{ $storyCount }};
             new Swiper('.stories-swiper', {
                 slidesPerView: 1,
                 spaceBetween: 16,

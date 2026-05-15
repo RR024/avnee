@@ -35,9 +35,9 @@
   {{-- ═══════════════════════════════════════════════ --}}
   {{-- JUST IN (NEW LAUNCHES SLIDER)                  --}}
   {{-- ═══════════════════════════════════════════════ --}}
-  <section id="just-in" class="relative w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-10 bg-[#FCEFF5] border-y border-[#d5d5d5]">
+  <section id="just-in" class="relative w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-10 bg-[#FCEFF5]">
     <div class="max-w-[1320px] mx-auto">
-      <h2 class="studio-section-heading mb-6 sm:mb-8">Just in</h2>
+      <h2 class="studio-section-heading mb-6 sm:mb-8" style="color: #C75B6E;">Just in</h2>
       <div class="grid grid-cols-2 gap-4 sm:gap-6">
         <a href="{{ route('front.products.collection', ['collection' => 'sale']) }}" class="block w-full border border-[#2B003A]/25 bg-white shadow-sm overflow-hidden">
           <img src="{{ asset('images/just-in/Picture1.png') }}" alt="Just in new launches 1" class="w-full aspect-[16/10] object-cover" />
@@ -108,10 +108,10 @@
       ->whereIn('slug', collect($bestBuyCards)->map(fn ($card) => \Illuminate\Support\Str::slug($card['title']))->all())
       ->pluck('id', 'slug');
   @endphp
-  <section id="best-buy-static" class="py-10 sm:py-14 bg-[#FCEFF5] border-b border-gray-200">
+  <section id="best-buy-static" class="py-10 sm:py-14 bg-[#FCEFF5]">
     <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex flex-col items-center justify-center text-center gap-3 mb-6">
-        <h2 class="studio-section-heading">Best Buy</h2>
+        <h2 class="studio-section-heading" style="color: #C75B6E;">Best Buy</h2>
       </div>
 
       <div class="relative group">
@@ -198,9 +198,9 @@
       ];
     })->all();
   @endphp
-  <section id="home-lookbook" class="py-10 sm:py-14 bg-[#FCEFF5] border-t border-b border-gray-200">
+  <section id="home-lookbook" class="py-10 sm:py-14 bg-[#FCEFF5]">
     <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="studio-section-heading mb-8">Shop The Look</h2>
+      <h2 class="studio-section-heading mb-8" style = "color: #C75B6E;">Shop The Look</h2>
     </div>
 
     <div class="relative max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8" id="lookbook-stage-wrap">
@@ -343,11 +343,9 @@
       ],
     ];
   @endphp
-  <section id="home-top-collections" class="py-10 sm:py-12 bg-[#FCEFF5] border-y border-[#f0dce2]">
+ <section id="home-top-collections" class="pt-10 pb-4 sm:pt-12 sm:pb-6 bg-[#FCEFF5]">
     <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="studio-section-heading mb-8 sm:mb-12">
-        Top Collection
-      </h2>
+      <h2 class="studio-section-heading mb-8 sm:mb-12" style = "color: #C75B6E;"> Top Collection</h2>
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
         @foreach($topCollections as $card)
           <article class="group relative overflow-hidden rounded-2xl bg-[#f3e3ea] shadow-sm">
@@ -363,6 +361,7 @@
         @endforeach
       </div>
     </div>
+    <div class="w-[80%] h-[2px] mx-auto mt-10" style="background-color:#C75B6E;"></div>
   </section>
 
 
@@ -371,7 +370,7 @@
   {{-- ═══════════════════════════════════════════════ --}}
   <section id="shop-by-price-static" class="py-12 sm:py-16 bg-[#FCEFF5]">
     <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="studio-section-heading mb-10 sm:mb-14">Shop by Price</h2>
+      <h2 class="studio-section-heading mb-10 sm:mb-14" style = "color: #C75B6E;">Shop by Price</h2>
       <div class="flex flex-wrap justify-center gap-6 sm:gap-10 lg:gap-16">
         @foreach([
           ['label' => 'Under', 'price' => '399', 'url' => route('front.products.index', ['max_price' => 399])],
@@ -400,7 +399,7 @@
   {{-- ═══════════════════════════════════════════════ --}}
   <section id="shop-by-style-static" class="py-12 sm:py-16 bg-[#FCEFF5]">
     <div class="w-full px-3 sm:px-4 lg:px-8 xl:px-10">
-      <h2 class="studio-section-heading mb-10">Shop by Category</h2>
+      <h2 class="studio-section-heading mb-10" style = "color: #C75B6E;">Shop by Category</h2>
       @php
         $styleCards = [
           ['label' => 'Infant Sets', 'slug' => 'infant-sets', 'image' => 'images/shop-by-style/infant-sets.png'],
@@ -626,7 +625,7 @@
   @endphp
   @if($newInJewelleryProducts->isNotEmpty())
   <section id="popular-pieces" class="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-[1440px] mx-auto overflow-hidden">
-    <h2 class="studio-section-heading mb-8 sm:mb-10">
+    <h2 class="studio-section-heading mb-8 sm:mb-10" style = "color: #C75B6E;">
       New In Jewellery
     </h2>
     <div class="relative group">
@@ -716,7 +715,7 @@
         <div class="swiper studio-edits-swiper overflow-hidden">
           <div class="swiper-wrapper">
             <div class="swiper-slide">
-              <h2 class="studio-section-heading mb-9 sm:mb-12">The Saree Edit</h2>
+              <h2 class="studio-section-heading mb-9 sm:mb-12" style = "color: #C75B6E;">The Saree Edit</h2>
               <div class="bg-[#efe8e8] p-4 sm:p-6 lg:p-7 grid grid-cols-1 lg:grid-cols-[1.22fr_0.98fr] gap-3 sm:gap-4 lg:gap-6">
                 <div class="grid grid-cols-[1.05fr_0.95fr] gap-3 sm:gap-4">
                   <div class="row-span-2">
@@ -742,7 +741,7 @@
             </div>
 
             <div class="swiper-slide">
-              <h2 class="studio-section-heading mb-9 sm:mb-12">{{ $funTrinketsExp->title ?? 'The Fun Trinkets Edit' }}</h2>
+              <h2 class="studio-section-heading mb-9 sm:mb-12" style = "color: #C75B6E;">{{ $funTrinketsExp->title ?? 'The Fun Trinkets Edit' }}</h2>
               <div class="bg-[#efe8e8] p-4 sm:p-6 lg:p-7 grid grid-cols-1 lg:grid-cols-[1.22fr_0.98fr] gap-3 sm:gap-4 lg:gap-6">
                 <div class="grid grid-cols-[1.05fr_0.95fr] gap-3 sm:gap-4">
                   <div class="row-span-2">
@@ -772,7 +771,7 @@
             </div>
 
             <div class="swiper-slide">
-              <h2 class="studio-section-heading mb-9 sm:mb-12">{{ $hairAccessoriesExp->title ?? 'The Hair Accessories Edit' }}</h2>
+              <h2 class="studio-section-heading mb-9 sm:mb-12" style = "color: #C75B6E;">{{ $hairAccessoriesExp->title ?? 'The Hair Accessories Edit' }}</h2>
               <div class="bg-[#efe8e8] p-4 sm:p-6 lg:p-7 grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-3 sm:gap-4 lg:gap-6">
                 <div class="flex items-center justify-center text-left px-2 sm:px-6 lg:px-10 py-6 sm:py-10">
                   <div class="max-w-[420px]">

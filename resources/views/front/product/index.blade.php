@@ -285,43 +285,55 @@
 @endphp
 
 @php
+    $selectedCollectionSlug = (string) request('collection', '');
     $isStandaloneDarkCategory = $isDark && in_array($selectedCategorySlug, ['trinkets'], true);
+    $forceWatchImages = $selectedCategorySlug === 'watches' || $selectedCollectionSlug === 'watches';
 @endphp
 
 <div class="{{ $isDark ? 'bg-[#2B003A]' : 'bg-[#F8C8DC]' }}">
     <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
         <nav class="mb-6 flex items-center gap-2 text-[10px] font-bold tracking-[0.24em] uppercase {{ $mutedColor }} overflow-x-auto whitespace-nowrap" aria-label="Breadcrumb">
-            <a href="{{ route($isDark ? 'front.jewellery' : 'front.home') }}" class="hover:{{ $textColor }} transition-colors">HOME</a>
-            <span class="opacity-40">&gt;&gt;</span>
-            @if($isDark && !$isStandaloneDarkCategory && !(request('collection') === 'sale' || request()->boolean('discount')))
-                <a href="{{ route('front.jewellery') }}" class="hover:{{ $textColor }} transition-colors {{ $textColor }}">JEWELLERY</a>
+            @if(in_array($selectedCollectionSlug, ['organizers', 'gifting'], true))
+                <a href="{{ route($isDark ? 'front.jewellery' : 'front.home') }}" class="hover:{{ $textColor }} transition-colors">HOME</a>
                 <span class="opacity-40">&gt;&gt;</span>
-                @if(request('collection') === 'sale' || request()->boolean('discount'))
-                    <span class="{{ $textColor }}">SALE</span>
-                @elseif($breadcrumbCategory)
-                    <a href="{{ route('front.products.index', ['category' => $breadcrumbCategory->slug]) }}" class="hover:{{ $textColor }} transition-colors {{ $textColor }}">{{ $breadcrumbCategory->name }}</a>
-                @elseif($selectedCategorySlug !== '')
-                    <span class="{{ $textColor }}">{{ $formatFilterLabel($selectedCategorySlug) }}</span>
-                @elseif(request('collection'))
-                    <span class="{{ $textColor }}">{{ $formatFilterLabel(request('collection')) }}</span>
-                @else
-                    <span class="{{ $textColor }}">{{ $priceBandLabel ?: 'All Collections' }}</span>
-                @endif
+                <span class="{{ $textColor }}">{{ strtoupper($formatFilterLabel($selectedCollectionSlug)) }}</span>
+            @elseif($forceWatchImages)
+                <a href="{{ route($isDark ? 'front.jewellery' : 'front.home') }}" class="hover:{{ $textColor }} transition-colors">HOME</a>
+                <span class="opacity-40">&gt;&gt;</span>
+                <span class="{{ $textColor }}">WATCHES</span>
             @else
-                @if($breadcrumbCategory)
-                    <a href="{{ route('front.products.index', ['category' => $breadcrumbCategory->slug]) }}" class="hover:{{ $textColor }} transition-colors {{ $textColor }}">{{ $breadcrumbCategory->slug === 'jewellery-gallery' ? 'Sales' : $breadcrumbCategory->name }}</a>
-                @elseif($selectedCategorySlug !== '')
-                    <span class="{{ $textColor }}">{{ $selectedCategorySlug === 'jewellery-gallery' ? 'Sales' : $formatFilterLabel($selectedCategorySlug) }}</span>
-                @elseif(request('collection'))
-                    <span class="{{ $textColor }}">{{ $formatFilterLabel(request('collection')) }}</span>
-                @else
-                    <span class="{{ $textColor }}">{{ $priceBandLabel ?: 'All Collections' }}</span>
-                @endif
-            @endif
-            @if($breadcrumbSubcategory)
+                <a href="{{ route($isDark ? 'front.jewellery' : 'front.home') }}" class="hover:{{ $textColor }} transition-colors">HOME</a>
                 <span class="opacity-40">&gt;&gt;</span>
-                <span class="{{ $textColor }}">{{ $breadcrumbSubcategory->name }}</span>
+                @if($isDark && !$isStandaloneDarkCategory && !(request('collection') === 'sale' || request()->boolean('discount')))
+                    <a href="{{ route('front.jewellery') }}" class="hover:{{ $textColor }} transition-colors {{ $textColor }}">JEWELLERY</a>
+                    <span class="opacity-40">&gt;&gt;</span>
+                    @if(request('collection') === 'sale' || request()->boolean('discount'))
+                        <span class="{{ $textColor }}">SALE</span>
+                    @elseif($breadcrumbCategory)
+                        <a href="{{ route('front.products.index', ['category' => $breadcrumbCategory->slug]) }}" class="hover:{{ $textColor }} transition-colors {{ $textColor }}">{{ $breadcrumbCategory->name }}</a>
+                    @elseif($selectedCategorySlug !== '')
+                        <span class="{{ $textColor }}">{{ $formatFilterLabel($selectedCategorySlug) }}</span>
+                    @elseif(request('collection'))
+                        <span class="{{ $textColor }}">{{ $formatFilterLabel(request('collection')) }}</span>
+                    @else
+                        <span class="{{ $textColor }}">{{ $priceBandLabel ?: 'All Collections' }}</span>
+                    @endif
+                @else
+                    @if($breadcrumbCategory)
+                        <a href="{{ route('front.products.index', ['category' => $breadcrumbCategory->slug]) }}" class="hover:{{ $textColor }} transition-colors {{ $textColor }}">{{ $breadcrumbCategory->slug === 'jewellery-gallery' ? 'Sales' : $breadcrumbCategory->name }}</a>
+                    @elseif($selectedCategorySlug !== '')
+                        <span class="{{ $textColor }}">{{ $selectedCategorySlug === 'jewellery-gallery' ? 'Sales' : $formatFilterLabel($selectedCategorySlug) }}</span>
+                    @elseif(request('collection'))
+                        <span class="{{ $textColor }}">{{ $formatFilterLabel(request('collection')) }}</span>
+                    @else
+                        <span class="{{ $textColor }}">{{ $priceBandLabel ?: 'All Collections' }}</span>
+                    @endif
+                @endif
+                @if($breadcrumbSubcategory)
+                    <span class="opacity-40">&gt;&gt;</span>
+                    <span class="{{ $textColor }}">{{ $breadcrumbSubcategory->name }}</span>
+                @endif
             @endif
         </nav>
 
@@ -846,7 +858,7 @@
                     </div>
                 @elseif($products->isEmpty())
                     @php
-                        $requestedCategory = request('category');
+                        $requestedCategory = request('category', request('collection'));
                         $requestedMinPrice = is_numeric(request('min_price')) ? (float) request('min_price') : null;
                         $requestedMaxPrice = is_numeric(request('max_price')) ? (float) request('max_price') : null;
 
@@ -875,7 +887,9 @@
                                 $fallbackPool = [$listingFallbackImage];
                             }
 
-                            $sampleKeyword = trim(str_replace('-', ' ', (string) ($requestedCategory ?: ($isDark ? 'jewellery accessory' : 'fashion product'))));
+                            $sampleKeyword = $requestedCategory === 'watches'
+                                ? 'fashion watch'
+                                : trim(str_replace('-', ' ', (string) ($requestedCategory ?: ($isDark ? 'jewellery accessory' : 'fashion product'))));
                             $sampleCards = collect(range(1, 10))->map(function ($idx) use ($fallbackPool, $requestedCategory, $sampleKeyword, $onlineImage) {
                                 $image = $fallbackPool[$idx - 1] ?? $onlineImage($sampleKeyword . ' product', 3000 + $idx);
                                 return [
@@ -913,9 +927,10 @@
                             @foreach($sampleCards as $index => $sample)
                                 @php
                                     $categorySlug = request('category', '');
-                                    $detailUrl = $categorySlug
-                                        ? route('front.products.index', ['category' => $categorySlug])
-                                        : route('front.products.index');
+                                    $detailUrl = $sampleDetailUrl
+                                        ?? ($categorySlug
+                                            ? route('front.products.index', ['category' => $categorySlug])
+                                            : route('front.products.index'));
                                 @endphp
                                 <div class="group relative flex flex-col">
                                     <a href="{{ $detailUrl }}" class="relative block overflow-hidden {{ $cardBg }} aspect-[3/4] border {{ $borderColor }} rounded-lg group-hover:shadow-lg transition-shadow">
@@ -941,7 +956,15 @@
                     <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-5 gap-y-8">
                         @foreach($products as $product)
                         @php
-                            $productImageSrc = $resolveNameBasedImage($product->name, (int) $product->id);
+                            $productImageSrc = null;
+
+                            if ($forceWatchImages || ($product->category?->slug === 'watches')) {
+                                $productImageSrc = $onlineImage('fashion watch', 5000 + (int) $product->id);
+                            }
+
+                            if (!$productImageSrc) {
+                                $productImageSrc = $resolveNameBasedImage($product->name, (int) $product->id);
+                            }
 
                             $candidateSources = [
                                 $product->image,
@@ -970,9 +993,17 @@
                                     $productImageSrc = $onlineImage($keyword . ' product', 4000 + (int) $product->id);
                                 }
                             }
+
+                            if ($forceWatchImages) {
+                                $productImageSrc = $onlineImage('fashion watch', 5000 + (int) $product->id);
+                            }
+                        @endphp
+                        @php
+                            $productSlug = $product->slug ?: $product->id;
+                            $productUrl = route('front.product.detail', ['slug' => $productSlug]);
                         @endphp
                         <div class="group relative flex flex-col">
-                            <a href="{{ route('front.product.detail', $product->slug ?? $product->id) }}" class="relative block overflow-hidden bg-black aspect-[3/4] rounded-lg">
+                            <a href="{{ $productUrl }}" class="relative block overflow-hidden bg-black aspect-[3/4] rounded-lg product-card-link" data-product-id="{{ $product->id }}">
                                 <img src="{{ $productImageSrc }}" alt="{{ $product->name }}" class="w-full h-full object-cover object-top transition-transform duration-[2.5s] ease-out group-hover:scale-110 opacity-90 group-hover:opacity-100" onerror="this.onerror=null;this.src='{{ $listingFallbackImage }}';" />
 
                                 {{-- Smart Badge Placement --}}
@@ -1001,7 +1032,7 @@
                                 <span class="text-[9px] font-black uppercase tracking-[0.3em] {{ $mutedColor }} mb-2 block opacity-60">
                                     {{ $product->category?->name ?? 'Collection' }}
                                 </span>
-                                <a href="{{ route('front.product.detail', $product->slug ?? $product->id) }}" class="block group/link">
+                                <a href="{{ $productUrl }}" class="block group/link">
                                     <h3 class="text-sm font-semibold {{ $textColor }} leading-snug tracking-wide line-clamp-2 min-h-[2.5rem] group-hover/link:{{ $accentColor }} transition-colors uppercase">
                                         {{ $product->name }}
                                     </h3>
@@ -1040,6 +1071,19 @@
     .glass-card:hover {
         box-shadow: 0 20px 60px -15px rgba(0,0,0,0.2);
         transform: translateY(-2px);
+    }
+    .product-card-link {
+        position: relative;
+        z-index: 2;
+    }
+    .wishlist-btn {
+        z-index: 30 !important;
+    }
+    .product-card-link::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 1;
     }
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
