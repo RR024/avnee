@@ -90,6 +90,7 @@ class ProductController extends Controller
             'hand-made' => ['sort' => 'newest', 'category' => 'jewellery-gallery', 'collection' => 'hand-made', 'collection_title' => 'Hand Made'],
             'oxidised' => ['sort' => 'newest', 'category' => 'jewellery-gallery', 'collection' => 'oxidised', 'collection_title' => 'Oxidised'],
             'cultural' => ['sort' => 'newest', 'category' => 'jewellery-gallery', 'collection' => 'cultural', 'collection_title' => 'Cultural'],
+            'jewellery-new-arrivals' => ['sort' => 'newest', 'category' => 'jewellery-gallery', 'collection' => 'jewellery-new-arrivals', 'collection_title' => 'New Arrivals'],
         ];
 
         if (!isset($map[$collection])) {
@@ -98,7 +99,7 @@ class ProductController extends Controller
 
         $collectionConfig = $map[$collection];
 
-        if (in_array($collection, ['organizers', 'gifting', 'hand-made', 'oxidised', 'cultural'], true)) {
+        if (in_array($collection, ['organizers', 'gifting', 'hand-made', 'oxidised', 'cultural', 'jewellery-new-arrivals'], true)) {
             session(['theme' => 'jewellery', 'brand_id' => 2]);
         } else {
             session(['theme' => 'studio', 'brand_id' => 1]);
@@ -330,7 +331,9 @@ class ProductController extends Controller
 
         $collectionTitle = $request->query('collection_title');
 
-        return view('front.product.index', compact('products', 'categories', 'sizes', 'theme', 'exploreGrids', 'festiveGallery', 'sampleGallery', 'saleVisuals', 'styleCategoryCounts', 'collectionTitle'));
+        $sampleDetailUrl = null;
+
+        return view('front.product.index', compact('products', 'categories', 'sizes', 'theme', 'exploreGrids', 'festiveGallery', 'sampleGallery', 'saleVisuals', 'styleCategoryCounts', 'collectionTitle', 'sampleDetailUrl'));
     }
 
     /**
@@ -338,8 +341,20 @@ class ProductController extends Controller
      */
     public function show($slug)
     {
-        $product = Product::where('slug', $slug)
-            ->orWhere('id', $slug)
+        $brandId = session('brand_id');
+
+        $productQuery = Product::query();
+        if (is_numeric($slug)) {
+            $productQuery->where('id', (int) $slug);
+        } else {
+            $productQuery->where('slug', $slug);
+        }
+
+        if ($brandId) {
+            $productQuery->where('brand_id', (int) $brandId);
+        }
+
+        $product = $productQuery
             ->with(['images', 'variants', 'category', 'reviews' => function($q) {
                 $q->where('status', 'approved')->with('user')->latest();
             }, 'flashSales' => function($q) {

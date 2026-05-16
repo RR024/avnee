@@ -16,6 +16,7 @@
         'bogo' => 'BOGO Collection',
         'organizers' => 'Organizers',
         'gifting' => 'Gifting',
+        'jewellery-new-arrivals' => 'New Arrivals',
         'all-collections' => 'All Collections',
         'party-frocks' => 'Party Frocks',
         'summer-collections' => 'Summer Collections',
@@ -80,7 +81,7 @@
         ],
     ];
     $activeCollection = request('collection');
-    $collectionHeadingPriority = ['all-collections', 'party-frocks', 'summer-collections', 'summer-classics', 'birthday-glam', 'ugadi-sale', 'festive-wear', 'daily-wear', 'all-sarees', 'printed-cotton', 'georgette', 'semi-silk'];
+    $collectionHeadingPriority = ['all-collections', 'party-frocks', 'summer-collections', 'summer-classics', 'birthday-glam', 'ugadi-sale', 'festive-wear', 'daily-wear', 'all-sarees', 'printed-cotton', 'georgette', 'semi-silk', 'jewellery-new-arrivals'];
     $formatFilterLabel = function (?string $raw): string {
         $raw = (string) $raw;
         if ($raw === '') {
@@ -283,43 +284,59 @@
 ?>
 
 <?php
+    $selectedCollectionSlug = (string) request('collection', '');
     $isStandaloneDarkCategory = $isDark && in_array($selectedCategorySlug, ['trinkets'], true);
+    $forceWatchImages = $selectedCategorySlug === 'watches' || $selectedCollectionSlug === 'watches';
 ?>
 
 <div class="<?php echo e($isDark ? 'bg-[#2B003A]' : 'bg-[#F8C8DC]'); ?>">
     <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
         <nav class="mb-6 flex items-center gap-2 text-[10px] font-bold tracking-[0.24em] uppercase <?php echo e($mutedColor); ?> overflow-x-auto whitespace-nowrap" aria-label="Breadcrumb">
-            <a href="<?php echo e(route($isDark ? 'front.jewellery' : 'front.home')); ?>" class="hover:<?php echo e($textColor); ?> transition-colors">HOME</a>
-            <span class="opacity-40">&gt;&gt;</span>
-            <?php if($isDark && !$isStandaloneDarkCategory && !(request('collection') === 'sale' || request()->boolean('discount'))): ?>
-                <a href="<?php echo e(route('front.jewellery')); ?>" class="hover:<?php echo e($textColor); ?> transition-colors <?php echo e($textColor); ?>">JEWELLERY</a>
+            <?php if(in_array($selectedCollectionSlug, ['organizers', 'gifting'], true)): ?>
+                <a href="<?php echo e(route($isDark ? 'front.jewellery' : 'front.home')); ?>" class="hover:<?php echo e($textColor); ?> transition-colors">HOME</a>
                 <span class="opacity-40">&gt;&gt;</span>
-                <?php if(request('collection') === 'sale' || request()->boolean('discount')): ?>
-                    <span class="<?php echo e($textColor); ?>">SALE</span>
-                <?php elseif($breadcrumbCategory): ?>
-                    <a href="<?php echo e(route('front.products.index', ['category' => $breadcrumbCategory->slug])); ?>" class="hover:<?php echo e($textColor); ?> transition-colors <?php echo e($textColor); ?>"><?php echo e($breadcrumbCategory->name); ?></a>
-                <?php elseif($selectedCategorySlug !== ''): ?>
-                    <span class="<?php echo e($textColor); ?>"><?php echo e($formatFilterLabel($selectedCategorySlug)); ?></span>
-                <?php elseif(request('collection')): ?>
-                    <span class="<?php echo e($textColor); ?>"><?php echo e($formatFilterLabel(request('collection'))); ?></span>
-                <?php else: ?>
-                    <span class="<?php echo e($textColor); ?>"><?php echo e($priceBandLabel ?: 'All Collections'); ?></span>
-                <?php endif; ?>
+                <span class="<?php echo e($textColor); ?>"><?php echo e(strtoupper($formatFilterLabel($selectedCollectionSlug))); ?></span>
+            <?php elseif($selectedCollectionSlug === 'jewellery-new-arrivals'): ?>
+                <a href="<?php echo e(route($isDark ? 'front.jewellery' : 'front.home')); ?>" class="hover:<?php echo e($textColor); ?> transition-colors">HOME</a>
+                <span class="opacity-40">&gt;&gt;</span>
+                <span class="<?php echo e($textColor); ?>">NEW ARRIVALS</span>
+            <?php elseif($forceWatchImages): ?>
+                <a href="<?php echo e(route($isDark ? 'front.jewellery' : 'front.home')); ?>" class="hover:<?php echo e($textColor); ?> transition-colors">HOME</a>
+                <span class="opacity-40">&gt;&gt;</span>
+                <span class="<?php echo e($textColor); ?>">WATCHES</span>
             <?php else: ?>
-                <?php if($breadcrumbCategory): ?>
-                    <a href="<?php echo e(route('front.products.index', ['category' => $breadcrumbCategory->slug])); ?>" class="hover:<?php echo e($textColor); ?> transition-colors <?php echo e($textColor); ?>"><?php echo e($breadcrumbCategory->slug === 'jewellery-gallery' ? 'Sales' : $breadcrumbCategory->name); ?></a>
-                <?php elseif($selectedCategorySlug !== ''): ?>
-                    <span class="<?php echo e($textColor); ?>"><?php echo e($selectedCategorySlug === 'jewellery-gallery' ? 'Sales' : $formatFilterLabel($selectedCategorySlug)); ?></span>
-                <?php elseif(request('collection')): ?>
-                    <span class="<?php echo e($textColor); ?>"><?php echo e($formatFilterLabel(request('collection'))); ?></span>
-                <?php else: ?>
-                    <span class="<?php echo e($textColor); ?>"><?php echo e($priceBandLabel ?: 'All Collections'); ?></span>
-                <?php endif; ?>
-            <?php endif; ?>
-            <?php if($breadcrumbSubcategory): ?>
+                <a href="<?php echo e(route($isDark ? 'front.jewellery' : 'front.home')); ?>" class="hover:<?php echo e($textColor); ?> transition-colors">HOME</a>
                 <span class="opacity-40">&gt;&gt;</span>
-                <span class="<?php echo e($textColor); ?>"><?php echo e($breadcrumbSubcategory->name); ?></span>
+                <?php if($isDark && !$isStandaloneDarkCategory && !(request('collection') === 'sale' || request()->boolean('discount'))): ?>
+                    <a href="<?php echo e(route('front.jewellery')); ?>" class="hover:<?php echo e($textColor); ?> transition-colors <?php echo e($textColor); ?>">JEWELLERY</a>
+                    <span class="opacity-40">&gt;&gt;</span>
+                    <?php if(request('collection') === 'sale' || request()->boolean('discount')): ?>
+                        <span class="<?php echo e($textColor); ?>">SALE</span>
+                    <?php elseif($breadcrumbCategory): ?>
+                        <a href="<?php echo e(route('front.products.index', ['category' => $breadcrumbCategory->slug])); ?>" class="hover:<?php echo e($textColor); ?> transition-colors <?php echo e($textColor); ?>"><?php echo e($breadcrumbCategory->name); ?></a>
+                    <?php elseif($selectedCategorySlug !== ''): ?>
+                        <span class="<?php echo e($textColor); ?>"><?php echo e($formatFilterLabel($selectedCategorySlug)); ?></span>
+                    <?php elseif(request('collection')): ?>
+                        <span class="<?php echo e($textColor); ?>"><?php echo e($formatFilterLabel(request('collection'))); ?></span>
+                    <?php else: ?>
+                        <span class="<?php echo e($textColor); ?>"><?php echo e($priceBandLabel ?: 'All Collections'); ?></span>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <?php if($breadcrumbCategory): ?>
+                        <a href="<?php echo e(route('front.products.index', ['category' => $breadcrumbCategory->slug])); ?>" class="hover:<?php echo e($textColor); ?> transition-colors <?php echo e($textColor); ?>"><?php echo e($breadcrumbCategory->slug === 'jewellery-gallery' ? 'Sales' : $breadcrumbCategory->name); ?></a>
+                    <?php elseif($selectedCategorySlug !== ''): ?>
+                        <span class="<?php echo e($textColor); ?>"><?php echo e($selectedCategorySlug === 'jewellery-gallery' ? 'Sales' : $formatFilterLabel($selectedCategorySlug)); ?></span>
+                    <?php elseif(request('collection')): ?>
+                        <span class="<?php echo e($textColor); ?>"><?php echo e($formatFilterLabel(request('collection'))); ?></span>
+                    <?php else: ?>
+                        <span class="<?php echo e($textColor); ?>"><?php echo e($priceBandLabel ?: 'All Collections'); ?></span>
+                    <?php endif; ?>
+                <?php endif; ?>
+                <?php if($breadcrumbSubcategory): ?>
+                    <span class="opacity-40">&gt;&gt;</span>
+                    <span class="<?php echo e($textColor); ?>"><?php echo e($breadcrumbSubcategory->name); ?></span>
+                <?php endif; ?>
             <?php endif; ?>
         </nav>
 
@@ -846,7 +863,7 @@
                     </div>
                 <?php elseif($products->isEmpty()): ?>
                     <?php
-                        $requestedCategory = request('category');
+                        $requestedCategory = request('category', request('collection'));
                         $requestedMinPrice = is_numeric(request('min_price')) ? (float) request('min_price') : null;
                         $requestedMaxPrice = is_numeric(request('max_price')) ? (float) request('max_price') : null;
 
@@ -875,7 +892,9 @@
                                 $fallbackPool = [$listingFallbackImage];
                             }
 
-                            $sampleKeyword = trim(str_replace('-', ' ', (string) ($requestedCategory ?: ($isDark ? 'jewellery accessory' : 'fashion product'))));
+                            $sampleKeyword = $requestedCategory === 'watches'
+                                ? 'fashion watch'
+                                : trim(str_replace('-', ' ', (string) ($requestedCategory ?: ($isDark ? 'jewellery accessory' : 'fashion product'))));
                             $sampleCards = collect(range(1, 10))->map(function ($idx) use ($fallbackPool, $requestedCategory, $sampleKeyword, $onlineImage) {
                                 $image = $fallbackPool[$idx - 1] ?? $onlineImage($sampleKeyword . ' product', 3000 + $idx);
                                 return [
@@ -913,9 +932,16 @@
                             <?php $__currentLoopData = $sampleCards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $sample): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <?php
                                     $categorySlug = request('category', '');
-                                    $detailUrl = $categorySlug
-                                        ? route('front.products.index', ['category' => $categorySlug])
-                                        : route('front.products.index');
+                                    $activeCol = request('collection', '');
+                                    if ($activeCol === 'organizers' || $categorySlug === 'organizers') {
+                                        $sampleSlug = \Illuminate\Support\Str::slug($sample['title']);
+                                        $detailUrl = route('front.demo.product', ['slug' => $sampleSlug, 'price' => $sample['price']]);
+                                    } else {
+                                        $detailUrl = $sampleDetailUrl
+                                            ?? ($categorySlug
+                                                ? route('front.products.index', ['category' => $categorySlug])
+                                                : route('front.products.index'));
+                                    }
                                 ?>
                                 <div class="group relative flex flex-col">
                                     <a href="<?php echo e($detailUrl); ?>" class="relative block overflow-hidden <?php echo e($cardBg); ?> aspect-[3/4] border <?php echo e($borderColor); ?> rounded-lg group-hover:shadow-lg transition-shadow">
@@ -941,7 +967,15 @@
                     <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-x-5 gap-y-8">
                         <?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <?php
-                            $productImageSrc = $resolveNameBasedImage($product->name, (int) $product->id);
+                            $productImageSrc = null;
+
+                            if ($forceWatchImages || ($product->category?->slug === 'watches')) {
+                                $productImageSrc = $onlineImage('fashion watch', 5000 + (int) $product->id);
+                            }
+
+                            if (!$productImageSrc) {
+                                $productImageSrc = $resolveNameBasedImage($product->name, (int) $product->id);
+                            }
 
                             $candidateSources = [
                                 $product->image,
@@ -970,9 +1004,17 @@
                                     $productImageSrc = $onlineImage($keyword . ' product', 4000 + (int) $product->id);
                                 }
                             }
+
+                            if ($forceWatchImages) {
+                                $productImageSrc = $onlineImage('fashion watch', 5000 + (int) $product->id);
+                            }
+                        ?>
+                        <?php
+                            $productSlug = $product->slug ?: $product->id;
+                            $productUrl = route('front.product.detail', ['slug' => $productSlug]);
                         ?>
                         <div class="group relative flex flex-col">
-                            <a href="<?php echo e(route('front.product.detail', $product->slug ?? $product->id)); ?>" class="relative block overflow-hidden bg-black aspect-[3/4] rounded-lg">
+                            <a href="<?php echo e($productUrl); ?>" class="relative block overflow-hidden bg-black aspect-[3/4] rounded-lg product-card-link" data-product-id="<?php echo e($product->id); ?>">
                                 <img src="<?php echo e($productImageSrc); ?>" alt="<?php echo e($product->name); ?>" class="w-full h-full object-cover object-top transition-transform duration-[2.5s] ease-out group-hover:scale-110 opacity-90 group-hover:opacity-100" onerror="this.onerror=null;this.src='<?php echo e($listingFallbackImage); ?>';" />
 
                                 
@@ -1002,7 +1044,7 @@
                                     <?php echo e($product->category?->name ?? 'Collection'); ?>
 
                                 </span>
-                                <a href="<?php echo e(route('front.product.detail', $product->slug ?? $product->id)); ?>" class="block group/link">
+                                <a href="<?php echo e($productUrl); ?>" class="block group/link">
                                     <h3 class="text-sm font-semibold <?php echo e($textColor); ?> leading-snug tracking-wide line-clamp-2 min-h-[2.5rem] group-hover/link:<?php echo e($accentColor); ?> transition-colors uppercase">
                                         <?php echo e($product->name); ?>
 
@@ -1043,6 +1085,19 @@
     .glass-card:hover {
         box-shadow: 0 20px 60px -15px rgba(0,0,0,0.2);
         transform: translateY(-2px);
+    }
+    .product-card-link {
+        position: relative;
+        z-index: 2;
+    }
+    .wishlist-btn {
+        z-index: 30 !important;
+    }
+    .product-card-link::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 1;
     }
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {

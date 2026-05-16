@@ -64,7 +64,7 @@
   @endphp
   <section id="home-featured-collections" class="py-10 sm:py-14 bg-[#2B003A] border-y border-[#4f006a]">
     <div class="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="font-heading text-2xl sm:text-4xl text-center text-[#f3d9ff] font-normal tracking-[0.2em] mb-10 sm:mb-14 uppercase decoration-[#f3d9ff]/30 underline underline-offset-[12px]">Our Collections</h2>
+      <h2 class="font-heading text-2xl sm:text-4xl text-center text-[#d4af37] font-normal tracking-[0.2em] mb-10 uppercase underline decoration-[#d4af37] underline-offset-[12px]"> OUR COLLECTIONS </h2>
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-4">
         @foreach($featuredCollectionCards as $card)
           <a href="{{ route('front.jewellery.collection.show', $card['slug']) }}" class="group block border border-[#4f006a] bg-[#350047] p-1.5 shadow-sm hover:shadow-md transition-shadow duration-300">
@@ -120,7 +120,9 @@
   @endphp
   <section id="trending-now-static" class="py-12 sm:py-16 bg-[#2B003A] border-y border-[#4f006a]">
     <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="font-heading text-2xl sm:text-4xl text-center text-[#f3d9ff] font-normal tracking-[0.12em] mb-10 sm:mb-14">Trending Now</h2>
+      <h2 class="font-heading text-2xl sm:text-4xl text-center text-[#d4af37] font-normal tracking-[0.12em] mb-10 sm:mb-14 underline decoration-[#d4af37] underline-offset-[12px] uppercase">
+        TRENDING NOW
+      </h2>
       <div class="relative group">
         <button id="trending-prev" class="absolute -left-1 sm:-left-4 top-1/2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center bg-black border border-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 text-white opacity-100 group-hover:opacity-100">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
@@ -181,9 +183,11 @@
   {{-- ═══════════════════════════════════════════════ --}}
   {{-- SHOP BY PRICE                                  --}}
   {{-- ═══════════════════════════════════════════════ --}}
-  <section id="shop-by-price-static" class="py-12 sm:py-16 bg-[#2B003A]">
+  <section id="shop-by-price-static" class="py-12 sm:py-16 bg-[#d4af37]">
     <div class="max-w-[1320px] mx-auto px-3 sm:px-4 lg:px-6">
-      <h2 class="font-heading text-2xl sm:text-4xl text-center text-[#d4af37] font-normal tracking-[0.2em] mb-10 sm:mb-14 uppercase decoration-[#d4af37]/40 underline underline-offset-[12px]">Shop by Price</h2>
+      <h2 class="font-heading text-2xl sm:text-4xl text-center text-[#d4af37] font-normal tracking-[0.2em] mb-10 sm:mb-14 uppercase decoration-[#d4af37]/40 underline underline-offset-[12px]">
+        SHOP BY PRICE
+</h2>
       <div class="flex flex-wrap justify-center gap-6 sm:gap-10 lg:gap-16">
         @foreach([
           ['label' => 'Under', 'price' => '399', 'url' => route('front.products.index', ['max_price' => 399, 'force_theme' => 'jewellery'])],
@@ -208,9 +212,11 @@
 
   {{-- SHOP BY CATEGORY                               --}}
   {{-- ═════════════════════════════════════════════════ --}}
-  <section id="shop-by-style-static" class="py-12 sm:py-16 bg-[#2B003A]">
+  <section id="shop-by-style-static" class="py-12 sm:py-16 bg-[#d4af37]">
     <div class="w-full px-3 sm:px-4 lg:px-8 xl:px-10">
-      <h2 class="font-heading text-2xl sm:text-4xl text-center text-[#d4af37] font-normal tracking-[0.2em] mb-10 uppercase">Shop by Category</h2>
+<h2 class="font-heading text-2xl sm:text-4xl text-center text-[#d4af37] font-normal tracking-[0.2em] mb-10 uppercase underline decoration-[#d4af37] underline-offset-[12px]">
+  SHOP BY CATEGORY
+</h2>
       @php
         $styleCards = [
           ['label' => 'Sets', 'slug' => 'necklace-set', 'image' => 'images/jewellery/Necklace/17850103560573191.webp'],
@@ -677,49 +683,7 @@
     @endif
 
     {{-- BESTSELLING STYLES --}}
-    @if(($section->section_id === 'popular_pieces_jewellery' || $section->section_id === 'popular_pieces') && $section->is_active)
-      <section id="bestselling-styles" class="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-[1440px] mx-auto overflow-hidden">
-        <h2 class="font-heading text-2xl sm:text-4xl text-center text-[#f3d9ff] font-normal tracking-[0.2em] mb-10 sm:mb-14 uppercase decoration-[#f3d9ff]/30 underline underline-offset-[12px]">
-          {{ $section->title }}
-        </h2>
-        <div class="relative group">
-          <button id="popular-prev" class="absolute -left-1 sm:-left-4 top-[40%] -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center bg-[#350047] border border-[#4f006a] rounded-full shadow-md hover:shadow-lg hover:border-[#f3d9ff] transition-all duration-200 text-[#e8b3ff] opacity-0 group-hover:opacity-100">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-          </button>
-          <button id="popular-next" class="absolute -right-1 sm:-right-4 top-[40%] -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center bg-[#350047] border border-[#4f006a] rounded-full shadow-md hover:shadow-lg hover:border-[#f3d9ff] transition-all duration-200 text-[#e8b3ff] opacity-0 group-hover:opacity-100">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-          </button>
-          <div class="swiper bestsell-swiper overflow-visible">
-            <div class="swiper-wrapper">
-              @foreach($section->products->take($section->limit) as $product)
-              <div class="swiper-slide">
-                <div class="group relative">
-                    <a href="{{ route('front.product.detail', $product->slug) }}" class="block aspect-[3/4] bg-[#2B003A] overflow-hidden">
-                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
-                    </a>
-                    <button
-                        type="button"
-                        class="wishlist-btn absolute top-3 right-3 z-20 h-9 w-9 rounded-full border border-white/70 bg-white/90 text-gray-700 shadow-sm backdrop-blur transition hover:scale-105 hover:bg-white {{ $product->is_wishlisted ? 'text-red-500' : '' }}"
-                        data-product-id="{{ $product->id }}"
-                        aria-label="Add to wishlist"
-                        title="Add to wishlist"
-                    >
-                        <svg class="wishlist-icon mx-auto h-4 w-4 {{ $product->is_wishlisted ? 'fill-current' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                        </svg>
-                    </button>
-                    <div class="pt-4 px-1">
-                        <h3 class="text-[11px] font-bold text-black uppercase tracking-wider mb-1 truncate">{{ $product->name }}</h3>
-                        <p class="text-xs font-bold text-black">₹{{ number_format($product->price, 0) }}</p>
-                    </div>
-                </div>
-              </div>
-              @endforeach
-            </div>
-          </div>
-        </div>
-      </section>
-    @endif
+
   @endforeach
 
   {{-- ═══════════════════════════════════════════════ --}}
@@ -807,7 +771,8 @@
   @endphp
   <section id="home-lookbook-jewellery" class="py-10 sm:py-14 bg-[#f2f2f2] border-t border-b border-gray-200">
     <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="font-heading text-2xl sm:text-5xl text-center text-[#111827] font-normal tracking-tight mb-8 underline underline-offset-8 decoration-[#f0c58f]">Shop The Look</h2>
+      <h2 class="font-heading text-2xl sm:text-5xl text-center text-[#d4af37] font-normal tracking-tight mb-8 underline underline-offset-8 decoration-[#d4af37] uppercase">
+        SHOP THE LOOK
     </div>
 
     <div class="relative max-w-[1440px] mx-auto px-2 sm:px-8" id="lookbook-stage-wrap-jw">
@@ -1146,8 +1111,13 @@
   <div id="jewellery-handmade-collection">
     <section class="py-12 sm:py-16" style="background: linear-gradient(180deg, #2b003a 0%, #1a0026 100%);">
       <div class="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="font-heading text-2xl sm:text-4xl text-center mb-2" style="color:#f7d7aa;">Handmade Collection</h2>
-        <p class="text-center text-sm sm:text-base mb-8" style="color:#e9d5ff/70;">Crafted with love — each piece tells a story</p>
+        <h2 class="font-heading text-2xl sm:text-4xl text-center mb-2 uppercase underline underline-offset-[12px]" style="color:#d4af37; text-decoration-color:#d4af37;">
+  HANDMADE COLLECTION
+</h2>
+
+<p class="text-center text-sm sm:text-base mb-8" style="color:rgba(233,213,255,0.7);">
+  Crafted with love — each piece tells a story
+</p>
 
         <div class="relative group">
           <button id="handmade-col-prev" class="absolute -left-1 sm:-left-5 top-[42%] -translate-y-1/2 z-20 w-11 h-11 rounded-full flex items-center justify-center transition-colors border" style="background:rgba(0,0,0,0.4);border-color:rgba(240,197,143,0.5);color:#f7d7aa;">
@@ -1233,22 +1203,20 @@
       border-bottom: 1px solid rgba(212, 175, 55, 0.45) !important;
     }
 
-    .jewellery-home-sequence h1,
-    .jewellery-home-sequence h2,
-    .jewellery-home-sequence h3,
-    .jewellery-home-sequence h4,
     .jewellery-home-sequence p,
-    .jewellery-home-sequence span,
-    .jewellery-home-sequence a {
-      color: var(--jw-text) !important;
-    }
-
+.jewellery-home-sequence span,
+.jewellery-home-sequence a {
+  color: inherit !important;
+}
     /* ── Handmade Collection: restore gold/cream text on dark background ── */
     .jewellery-home-sequence #jewellery-handmade-collection section {
       background-color: transparent !important;
       border-color: transparent !important;
       border-bottom: none !important;
     }
+    #jewellery-handmade-collection p {
+    text-decoration: none !important;
+}
     .jewellery-home-sequence #jewellery-handmade-collection h2 { color: #f7d7aa !important; }
     .jewellery-home-sequence #jewellery-handmade-collection h3 { color: #f7d7aa !important; }
     .jewellery-home-sequence #jewellery-handmade-collection p  { color: rgba(233,213,255,0.75) !important; }
@@ -1261,7 +1229,12 @@
       border-color: transparent !important;
       border-bottom: none !important;
     }
-    .jewellery-home-sequence #jewellery-explore-more h2  { color: #c7a4cc !important; }
+    .jewellery-home-sequence #jewellery-explore-more h2  {
+  color: #d4af37 !important;
+  text-decoration: underline;
+  text-decoration-color: #d4af37;
+  text-underline-offset: 12px;
+}
     .jewellery-home-sequence #jewellery-explore-more h3  { color: #f7d7aa !important; }
     .jewellery-home-sequence #jewellery-explore-more p   { color: rgba(233,213,255,0.85) !important; }
     .jewellery-home-sequence #jewellery-explore-more a   { color: #f7d7aa !important; }
@@ -1285,7 +1258,17 @@
     .jewellery-home-sequence > #brand-experiences { order: 10; }       /* Handcrafted */
     .jewellery-home-sequence > #jewellery-handmade-collection { order: 11; } /* Handmade Collection */
     .jewellery-home-sequence > #jewellery-explore-more { order: 12; }  /* Explore More */
-    .jewellery-home-sequence > #jewellery-read-blog { order: 13; }     /* Read our Blog */
+    /* READ OUR BLOG FIX */
+.jewellery-home-sequence #jewellery-read-blog h1,
+.jewellery-home-sequence #jewellery-read-blog h2,
+.jewellery-home-sequence #jewellery-read-blog h3,
+.jewellery-home-sequence #jewellery-read-blog .section-title,
+.jewellery-home-sequence #jewellery-read-blog .heading {
+    color: #d4af37 !important;
+    text-decoration: underline !important;
+    text-decoration-color: #d4af37 !important;
+    text-underline-offset: 12px !important;
+}    /* Read our Blog */
 
     /* Remaining sections kept after requested flow */
     .jewellery-home-sequence > #top-collections { order: 20; }
@@ -1296,6 +1279,13 @@
     .jewellery-home-sequence > #bestselling-styles { order: 25; }
     .jewellery-home-sequence > #jewellery-reviews { order: 30; }
     .jewellery-home-sequence > #jewellery-about-story { order: 31; }
+    #jewellery-about-story h1,
+#jewellery-about-story h2,
+#jewellery-about-story h3,
+#jewellery-about-story p,
+#jewellery-about-story span {
+    color: #d4af37 !important;
+}
   </style>
 
 @endsection

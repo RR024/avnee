@@ -311,7 +311,7 @@
         <!-- SECTION: Symphonic Pairings (Related) -->
         <?php if($relatedProducts->count() > 0): ?>
         <div class="mt-16 pt-10 border-t <?php echo e($borderColor); ?>">
-            <h2 class="font-heading text-2xl sm:text-3xl <?php echo e($isDark ? 'text-center' : 'text-left'); ?> font-normal tracking-tight uppercase mb-8 <?php echo e($textColor); ?>">Similar Products</h2>
+            <h2 class="font-heading text-2xl sm:text-3xl <?php echo e($isDark ? 'text-center' : 'text-left'); ?> font-normal tracking-tight uppercase mb-8 <?php echo e($isDark ? 'text-[#f3d9ff]' : 'text-gray-900'); ?>">Similar Products</h2>
 
             <div class="grid grid-cols-2 lg:grid-cols-5 gap-5">
                 <?php $__currentLoopData = $relatedProducts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $related): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -323,14 +323,14 @@
                         <?php endif; ?>
                     </a>
                     <div class="space-y-2">
-                        <a href="<?php echo e(route('front.product.detail', $related->slug ?? $related->id)); ?>" class="block text-[11px] font-bold tracking-widest uppercase <?php echo e($textColor); ?> line-clamp-1 opacity-70 group-hover:opacity-100 transition-opacity">
+                        <a href="<?php echo e(route('front.product.detail', $related->slug ?? $related->id)); ?>" class="block text-[11px] font-bold tracking-widest uppercase <?php echo e($isDark ? 'text-[#f3d9ff]' : 'text-gray-800'); ?> line-clamp-1 opacity-80 group-hover:opacity-100 transition-opacity">
                             <?php echo e($related->name); ?>
 
                         </a>
                         <div class="flex items-center gap-3">
-                            <span class="text-sm font-bold tracking-tight">₹<?php echo e(number_format($related->price, 0)); ?></span>
+                            <span class="text-sm font-bold tracking-tight <?php echo e($isDark ? 'text-[#d4af37]' : 'text-gray-900'); ?>">₹<?php echo e(number_format($related->price, 0)); ?></span>
                             <?php if($related->compare_price > $related->price): ?>
-                                <span class="text-[10px] <?php echo e($mutedColor); ?> line-through uppercase opacity-30">₹<?php echo e(number_format($related->compare_price, 0)); ?></span>
+                                <span class="text-[10px] <?php echo e($mutedColor); ?> line-through uppercase opacity-50">₹<?php echo e(number_format($related->compare_price, 0)); ?></span>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -342,15 +342,15 @@
 
         <?php if(isset($recentlyViewedProducts) && $recentlyViewedProducts->count() > 0): ?>
         <section class="mt-14 pt-10 border-t <?php echo e($borderColor); ?>">
-            <h2 class="font-heading text-2xl sm:text-3xl <?php echo e($isDark ? 'text-center' : 'text-left'); ?> font-normal tracking-[0.16em] uppercase mb-8 <?php echo e($textColor); ?>">Recently Viewed</h2>
+            <h2 class="font-heading text-2xl sm:text-3xl <?php echo e($isDark ? 'text-center' : 'text-left'); ?> font-normal tracking-[0.16em] uppercase mb-8 <?php echo e($isDark ? 'text-[#f3d9ff]' : 'text-gray-900'); ?>">Recently Viewed</h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
                 <?php $__currentLoopData = $recentlyViewedProducts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $recent): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <a href="<?php echo e(route('front.product.detail', $recent->slug ?? $recent->id)); ?>" class="group block">
                         <div class="aspect-[3/4] overflow-hidden border <?php echo e($borderColor); ?> <?php echo e($isDark ? 'bg-[#2B003A]' : 'bg-white/60'); ?>">
                             <img src="<?php echo e(asset('storage/' . $recent->image)); ?>" alt="<?php echo e($recent->name); ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                         </div>
-                        <p class="mt-3 text-[11px] font-bold tracking-[0.12em] uppercase <?php echo e($textColor); ?> line-clamp-1"><?php echo e($recent->name); ?></p>
-                        <p class="text-sm <?php echo e($accentColor); ?> font-semibold">₹<?php echo e(number_format($recent->price, 0)); ?></p>
+                        <p class="mt-3 text-[11px] font-bold tracking-[0.12em] uppercase <?php echo e($isDark ? 'text-[#f3d9ff]' : 'text-gray-800'); ?> line-clamp-1"><?php echo e($recent->name); ?></p>
+                        <p class="text-sm font-semibold <?php echo e($isDark ? 'text-[#d4af37]' : 'text-gray-900'); ?>">₹<?php echo e(number_format($recent->price, 0)); ?></p>
                     </a>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>

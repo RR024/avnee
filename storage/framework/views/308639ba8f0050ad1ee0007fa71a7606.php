@@ -1240,7 +1240,7 @@
             <li><a href="<?php echo e(route('front.sale.jewellery.accessories')); ?>" class="text-[#e9d5ff] text-[15px] hover:text-[#f3d9ff] transition-colors">Hair Accessories</a></li>
             <li><a href="<?php echo e(route('front.products.collection', ['collection' => 'organizers'])); ?>" class="text-[#e9d5ff] text-[15px] hover:text-[#f3d9ff] transition-colors">Organizers</a></li>
             <li><a href="<?php echo e(route('front.products.collection', ['collection' => 'gifting'])); ?>" class="text-[#e9d5ff] text-[15px] hover:text-[#f3d9ff] transition-colors">Gifting</a></li>
-            <li><a href="<?php echo e(route('front.products.collection', ['collection' => 'watches'])); ?>" class="text-[#e9d5ff] text-[15px] hover:text-[#f3d9ff] transition-colors">Watches</a></li>
+            <li>    <a href="<?php echo e(route('front.products.index', ['category' => 'watches'])); ?>"class="text-[#e9d5ff] text-[15px] hover:text-[#f3d9ff] transition-colors">Watches</a></li>
             <li><a href="<?php echo e(route('front.sale.studio.trinkets')); ?>" class="text-[#e9d5ff] text-[15px] hover:text-[#f3d9ff] transition-colors">Trinkets</a></li>
           </ul>
         </div>

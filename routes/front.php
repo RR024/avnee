@@ -47,6 +47,26 @@ Route::post('/logout', [FrontAuthController::class, 'logout'])->name('logout');
 Route::get('/products', [ProductController::class, 'index'])->name('front.products.index');
 Route::get('/products/{category}', [ProductController::class, 'index'])->name('front.products.category');
 
+Route::get('/demo-product/{slug}', function (string $slug) {
+    $price = is_numeric(request('price')) ? (int) request('price') : 699;
+
+    $product = [
+        'title'        => ucwords(str_replace('-', ' ', $slug)),
+        'price'        => $price,
+        'compare_price'=> round($price * 1.3),
+        'style_no'     => 'AVN-ORG-' . strtoupper(substr(md5($slug), 0, 6)),
+        'description'  => 'Premium AVNEE organizer collection product. '
+                        . 'Beautifully crafted for smart storage and neat daily display of your favourite accessories.',
+        'images'       => [
+            asset('images/hair-accessories/ha-src-1.jpeg'),
+            asset('images/hair-accessories/ha-src-2.jpeg'),
+            asset('images/hair-accessories/ha-src-3.jpeg'),
+        ],
+    ];
+
+    return view('front.demo-product', compact('product'));
+})->name('front.demo.product');
+
 // Jewellery category routes
 Route::get('/products/earrings', [ProductController::class, 'index'])->name('front.products.category');
 Route::get('/products/bracelets', [ProductController::class, 'index'])->name('front.products.category');
